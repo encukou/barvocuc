@@ -8,9 +8,7 @@ import csv
 from PIL import Image
 import numpy
 
-white_threshold = 0.8
-black_threshold = 0.2
-gray_threshold = 0.2
+from settings import Settings
 
 report_values = (
         ('filename', 'Jméno souboru'),
@@ -39,9 +37,11 @@ and_ = numpy.logical_and
 or_ = numpy.logical_or
 not_ = numpy.logical_not
 
-def main(basedir, outfilename):
+def main(basedir, outfile, settings=Settings()):
     # Open file
-    out = csv.writer(open(outfilename, 'w'))
+    if isinstance(outfile, basestring):
+        outfile = open(outfile, 'w')
+    out = csv.writer(outfile)
     # Write header
     out.writerow([val[1] for val in report_values])
 
@@ -106,20 +106,20 @@ def main(basedir, outfilename):
                 )
 
             # Now for colors: get boolean mask for white, black, grey pixels
-            white = (lum > white_threshold) * a
-            black = (lum < black_threshold) * a
-            gray = and_(not_(or_(white, black)), sat < gray_threshold) * a
+            white = (lum > settings.spc_thresholds[0]/100) * a
+            black = (lum < settings.spc_thresholds[1]/100) * a
+            gray = and_(not_(or_(white, black)), sat < settings.spc_thresholds[2]/100) * a
             # The other pixels meaningful hue
             colorful = not_(or_(or_(white, black), gray))
             # Get boolean mask for each color, use intervals from
             # [https://e-reports-ext.llnl.gov/pdf/309492.pdf]
-            red = and_(colorful, or_(hue < 20, hue > 335)) * a
-            orange = and_(colorful, and_(10 < hue, hue < 50)) * a
-            yellow = and_(colorful, and_(40 < hue, hue < 90)) * a
-            green = and_(colorful, and_(85 < hue, hue < 185)) * a
-            blue = and_(colorful, and_(175 < hue, hue < 275)) * a
-            purple = and_(colorful, and_(265 < hue, hue < 320)) * a
-            pink = and_(colorful, and_(310 < hue, hue < 350)) * a
+            red = and_(colorful, or_(hue < settings.thresholds[1], hue > settings.thresholds[12])) * a
+            orange = and_(colorful, and_(settings.thresholds[0] < hue, hue < settings.thresholds[3])) * a
+            yellow = and_(colorful, and_(settings.thresholds[2] < hue, hue < settings.thresholds[5])) * a
+            green = and_(colorful, and_(settings.thresholds[4] < hue, hue < settings.thresholds[7])) * a
+            blue = and_(colorful, and_(settings.thresholds[6] < hue, hue < settings.thresholds[9])) * a
+            purple = and_(colorful, and_(settings.thresholds[8] < hue, hue < settings.thresholds[11])) * a
+            pink = and_(colorful, and_(settings.thresholds[10] < hue, hue < settings.thresholds[13])) * a
             # Divide by total number of opaque pixels (and *100) to get percentages
             # of pixels with given color
             num_pixels = numpy.sum(a)
