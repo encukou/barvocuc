@@ -311,9 +311,7 @@ class Gui():
             self.setColor(btn, lst, index, (color.red()/255., color.green()/255., color.blue()/255.))
 
     def setColor(self, btn, lst, index, color):
-        pal = QtGui.QPalette()
-        pal.setColor(QtGui.QPalette.Button, QtGui.QColor(*(x*255 for x in color)))
-        btn.setPalette(pal)
+        btn.setStyleSheet("QPushButton { background-color: #%02X%02X%02X}" % tuple(x*255 for x in color))
         lst[index] = color
         self.update_picture()
 
