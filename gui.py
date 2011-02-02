@@ -136,6 +136,36 @@ class Gui():
         layoutR.addStretch()
         layout.addLayout(layoutR)
 
+        layoutR = QtGui.QHBoxLayout()
+        layoutR.addWidget(QtGui.QLabel(u'Zdrojový adresář:'))
+        self.srcdir = QtGui.QLineEdit()
+        self.srcdir.setMinimumWidth(100)
+        self.srcdir_select = QtGui.QPushButton('Vybrat...')
+        layoutR.addWidget(self.srcdir)
+        layoutR.addWidget(self.srcdir_select)
+        def select_srcdir():
+            s = QtGui.QFileDialog.getExistingDirectory(self.win, u"Zdrojový adresář")
+            if s:
+                self.srcdir.setText(s)
+        self.srcdir_select.connect(QtCore.SIGNAL('clicked()'), select_srcdir)
+        layoutR.addStretch()
+        layout.addLayout(layoutR)
+
+        layoutR = QtGui.QHBoxLayout()
+        layoutR.addWidget(QtGui.QLabel(u'Cílový adresář:'))
+        self.destdir = QtGui.QLineEdit()
+        self.destdir.setMinimumWidth(100)
+        self.destdir_select = QtGui.QPushButton('Vybrat...')
+        layoutR.addWidget(self.destdir)
+        layoutR.addWidget(self.destdir_select)
+        def select_destdir():
+            s = QtGui.QFileDialog.getExistingDirectory(self.win, u"Zdrojový adresář")
+            if s:
+                self.destdir.setText(s)
+        self.destdir_select.connect(QtCore.SIGNAL('clicked()'), select_destdir)
+        layoutR.addStretch()
+        layout.addLayout(layoutR)
+
         self.sourceLabel = QtGui.QLabel()
         self.schemaLabel = QtGui.QLabel()
 
@@ -150,12 +180,11 @@ class Gui():
         if argv[1:]:
             path = self.do_open(argv[1])
         else:
-            path = self.do_open()
+            path = None
+            self.schema = None
 
         if path:
             print path
-        else:
-            return
 
         self.reloadSettings()
 
@@ -219,6 +248,8 @@ class Gui():
         self.workTimer.start(0)
 
     def work(self):
+        if not self.schema:
+            return
         schema = self.schema
         if self.currentLine >= schema.height():
             return
@@ -291,7 +322,8 @@ class Gui():
             self.reloadSettings()
 
     def doDir(self):
-        path = QtGui.QFileDialog.getExistingDirectory()
+        path = self.srcdir.text()
+        path2 = self.destdir.text()
         if path:
             display = QtGui.QTextEdit()
             display.setReadOnly(True)
@@ -303,7 +335,13 @@ class Gui():
                     text[0] += string.decode('utf-8')
                     display.setPlainText(text[0])
                     QtGui.QApplication.instance().processEvents()
-            pocitej.main(str(path), PseudoFile(), self.settings)
+            if path2:
+                kwargs = dict(output_dir=str(path2))
+            else:
+                kwargs = {}
+            pocitej.main(str(path), PseudoFile(), self.settings, **kwargs)
+        else:
+            QtGui.QMessageBox.critical(self.win, u'...', u'Zadej vstupní adresář.')
 
     def getSetColor(self, btn, lst, index):
         color = QtGui.QColorDialog.getColor(QtGui.QColor(*(x*255 for x in lst[index])))

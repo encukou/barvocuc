@@ -7,6 +7,7 @@ import csv
 
 from PIL import Image
 import numpy
+import yaml
 
 from settings import Settings
 
@@ -37,10 +38,12 @@ and_ = numpy.logical_and
 or_ = numpy.logical_or
 not_ = numpy.logical_not
 
-def main(basedir, outfile, settings=Settings()):
+def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_dir=None):
     # Open file
     if isinstance(outfile, basestring):
         outfile = open(outfile, 'w')
+    if isinstance(settings, basestring):
+        settings = yaml.load(open(settings, 'r'))
     out = csv.writer(outfile)
     # Write header
     out.writerow([val[1] for val in report_values])
@@ -70,7 +73,7 @@ def main(basedir, outfile, settings=Settings()):
                 raise AssertionError('Empty image')
             image = image.crop(bbox)
             # Get individual pixels
-            arr = numpy.array(image)
+            arr = orig_arr = numpy.array(image)
             pixels = numpy.vstack(arr) / 256.
             # Prepare matrices for red, green, blue, alpha
             rgb = pixels[:, :3]
@@ -161,6 +164,36 @@ def main(basedir, outfile, settings=Settings()):
             print ' ' * 11, 'Chyba:', error
             import traceback
             print traceback.format_exc()
+        else:
+            try:
+                if output_dir:
+                    base_colors = (red, orange, yellow, green, blue, purple, pink)
+                    b = lambda a: numpy.array(a, dtype=bool)
+                    colors = [b(white), b(black), b(gray)]
+                    for i, color in enumerate(base_colors):
+                        prev = base_colors[(i - 1) % len(base_colors)]
+                        next = base_colors[(i + 1) % len(base_colors)]
+                        colors.append(and_(color, not_(or_(prev, next))))
+                        colors.append(and_(color, next))
+                    print colors
+                    r, g, b = zip(*(settings.spc_colors + settings.colors))
+                    print len(colors), len(r)
+                    print r, g, b
+                    arr = numpy.array(numpy.dstack(x.reshape((image.size[1], image.size[0])) * 255 for x in (
+                            numpy.sum(c * color for c, color in zip(r, colors)),
+                            numpy.sum(c * color for c, color in zip(g, colors)),
+                            numpy.sum(c * color for c, color in zip(b, colors)),
+                            a,
+                        )), dtype=numpy.uint8)
+                    print arr.sum(), arr.size
+                    arr = numpy.hstack((orig_arr, arr))
+                    new_img = Image.fromarray(arr)
+                    print new_img
+                    #new_img = Image.fromarray(numpy.dstack(x.reshape(image.size)*256 for x in (red, green, blue)), 'RGB')
+                    new_img.save(os.path.join(output_dir, filename))
+            except Exception, e:
+                import traceback
+                print traceback.format_exc()
 
 def weighted_std(values, weights, mean):
     """Weighted standard deviation given values, weights, and the values' weighted mean
@@ -172,12 +205,4 @@ def weighted_std(values, weights, mean):
 
 if __name__ == '__main__':
     import sys
-    try:
-        basedir = sys.argv[1]
-    except IndexError:
-        basedir = 'obrazky'
-    try:
-        outfilename = sys.argv[2]
-    except IndexError:
-        outfilename = 'obrazky.csv'
-    main(basedir, outfilename)
+    main(*sys.argv[1:])
