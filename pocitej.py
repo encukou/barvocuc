@@ -116,13 +116,13 @@ def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_d
             colorful = not_(or_(or_(white, black), gray))
             # Get boolean mask for each color, use intervals from
             # [https://e-reports-ext.llnl.gov/pdf/309492.pdf]
-            red = and_(colorful, or_(hue < settings.thresholds[1], hue > settings.thresholds[12])) * a
-            orange = and_(colorful, and_(settings.thresholds[0] < hue, hue < settings.thresholds[3])) * a
-            yellow = and_(colorful, and_(settings.thresholds[2] < hue, hue < settings.thresholds[5])) * a
-            green = and_(colorful, and_(settings.thresholds[4] < hue, hue < settings.thresholds[7])) * a
-            blue = and_(colorful, and_(settings.thresholds[6] < hue, hue < settings.thresholds[9])) * a
-            purple = and_(colorful, and_(settings.thresholds[8] < hue, hue < settings.thresholds[11])) * a
-            pink = and_(colorful, and_(settings.thresholds[10] < hue, hue < settings.thresholds[13])) * a
+            red = and_(colorful, or_(hue > settings.thresholds[12], hue <= settings.thresholds[1])) * a
+            orange = and_(colorful, and_(settings.thresholds[0] < hue, hue <= settings.thresholds[3])) * a
+            yellow = and_(colorful, and_(settings.thresholds[2] < hue, hue <= settings.thresholds[5])) * a
+            green = and_(colorful, and_(settings.thresholds[4] < hue, hue <= settings.thresholds[7])) * a
+            blue = and_(colorful, and_(settings.thresholds[6] < hue, hue <= settings.thresholds[9])) * a
+            purple = and_(colorful, and_(settings.thresholds[8] < hue, hue <= settings.thresholds[11])) * a
+            pink = and_(colorful, and_(settings.thresholds[10] < hue, hue <= settings.thresholds[13])) * a
             # Divide by total number of opaque pixels (and *100) to get percentages
             # of pixels with given color
             num_pixels = numpy.sum(a)
