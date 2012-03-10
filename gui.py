@@ -3,6 +3,9 @@
 from PySide import QtCore, QtGui
 import yaml
 
+import numpy
+from PIL import Image
+
 from settings import Settings
 import pocitej
 
@@ -112,6 +115,17 @@ class Gui():
                 self.color_set_params.append((btnColor, 'spc_colors', i))
 
             scope(i, name, prim_color, trans_color)
+
+        layoutR = QtGui.QHBoxLayout()
+        label = QtGui.QLabel("Hrany:")
+        label.setMinimumWidth(100)
+        label.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        layoutR.addWidget(label)
+        self.contrast_show_checkbox = QtGui.QCheckBox(u'Ukázat')
+        layoutR.addWidget(self.contrast_show_checkbox)
+        self.contrast_show_checkbox.connect(QtCore.SIGNAL('clicked()'), self.update_picture)
+        layoutR.addStretch()
+        layout.addLayout(layoutR)
 
         bOpen = QtGui.QPushButton(u"Otevřít obrázek")
         bOpen.connect(QtCore.SIGNAL('clicked()'), self.do_open)
@@ -232,6 +246,7 @@ class Gui():
             path, dummy = QtGui.QFileDialog.getOpenFileName()
         if not path:
             return None
+        self.source_path = path
         self.source = QtGui.QImage(path).convertToFormat(QtGui.QImage.Format_ARGB32)
         self.sourceLabel.setPixmap(QtGui.QPixmap(self.source))
         self.schema = QtGui.QImage(self.source)
@@ -243,9 +258,35 @@ class Gui():
         sys.exit(self.app.exec_())
 
     def update_picture(self):
-        self.currentLine = 0
-        self.progress.setValue(0)
-        self.workTimer.start(0)
+        if self.contrast_show_checkbox.isChecked():
+            self.workTimer.stop()
+
+            image = Image.open(self.source_path)
+            image = image.convert('RGBA')
+            arr = numpy.array(image)
+            pixels = numpy.vstack(arr) / 256.
+            r, g, b, a, hue, sat, lum = pocitej.get_rgba_hsl(pixels)
+            w, h = self.schema.width(), self.schema.height()
+            alpha = a.reshape((h, w))
+            sob = pocitej.do_sobel(lum, h, w).reshape((h, w))
+            print sob.shape
+
+            bgra = numpy.empty((h, w, 4), numpy.uint8, 'C')
+            print h, w, sob.shape
+            bgra[...,0] = 255 * (sob / 1).clip(0, 1)
+            bgra[...,1] = 255 * (sob / 2).clip(0, 1)
+            bgra[...,2] = 255 * (sob / 4).clip(0, 1)
+            bgra[...,3] = 255 * alpha
+            self.schema = QtGui.QImage(bgra.data, w, h, QtGui.QImage.Format_ARGB32)
+            self.schema.ndarray = bgra
+
+            self.schemaLabel.setPixmap(QtGui.QPixmap(self.schema))
+            self.progress.setMaximum(1)
+            self.progress.setValue(1)
+        else:
+            self.currentLine = 0
+            self.progress.setValue(0)
+            self.workTimer.start(0)
 
     def work(self):
         if not self.schema:
@@ -319,6 +360,7 @@ class Gui():
         path, dummy = QtGui.QFileDialog.getOpenFileName()
         if path:
             self.settings = yaml.load(open(path))
+            self.settings.fix()
             self.reloadSettings()
 
     def doDir(self):

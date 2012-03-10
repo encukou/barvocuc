@@ -6,6 +6,7 @@ import os
 import csv
 
 from PIL import Image
+from scipy import ndimage
 import numpy
 import yaml
 
@@ -31,6 +32,7 @@ report_values = (
         ('stddev_h', 'Směr. odch. H'),
         ('stddev_s', 'Směr. odch. S'),
         ('stddev_l', 'Směr. odch. L'),
+        ('avg_sobel', 'Hrany'),
         ('error', 'Chyba programu'),
     )
 
@@ -38,12 +40,55 @@ and_ = numpy.logical_and
 or_ = numpy.logical_or
 not_ = numpy.logical_not
 
+def get_rgba_hsl(pixels):
+    rgb = pixels[..., :3]
+    r = pixels[:, 0]
+    g = pixels[:, 1]
+    b = pixels[:, 2]
+    a = pixels[:, 3]
+    # Conversion to HSL: see [http://en.wikipedia.org/wiki/HSL_and_HSV]
+    # Get min/max RGB, and min-max, for each pixel
+    c_max = numpy.amax(rgb, 1)
+    c_min = numpy.amin(rgb, 1)
+    c_diff = c_max - c_min
+    # Compute hue
+    hue = numpy.select(
+            [c_max == c_min, c_max == r, c_max == g, c_max == b],
+            [
+                    0,
+                    60.0 * ((g - b) / c_diff) + 360,
+                    60.0 * ((b - r) / c_diff) + 120,
+                    60.0 * ((r - g) / c_diff) + 240.0,
+                ]
+        )
+    hue %= 360  # Normalize angle
+    # Get luminance & stauration
+    lum = 0.5 * (c_max + c_min)
+    sat = numpy.select(
+            [c_max == c_min, lum < 0.5, lum >= 0.5],
+            [
+                    0,
+                    (c_max - c_min) / (2.0 * lum),
+                    (c_max - c_min) / (2.0 - (2.0 * lum)),
+                ]
+        )
+    return r, g, b, a, hue, sat, lum
+
+def do_sobel(luminance, w, h):
+    luminance = luminance.reshape((w, h))
+
+    sx = ndimage.sobel(luminance, axis=0, mode='nearest')
+    sy = ndimage.sobel(luminance, axis=1, mode='nearest')
+    sob = numpy.hypot(sx, sy)
+    return sob.flatten()
+
 def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_dir=None):
     # Open file
     if isinstance(outfile, basestring):
         outfile = open(outfile, 'w')
     if isinstance(settings, basestring):
         settings = yaml.load(open(settings, 'r'))
+        settings.fix()
     out = csv.writer(outfile)
     # Write header
     out.writerow([val[1] for val in report_values])
@@ -76,37 +121,10 @@ def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_d
             arr = orig_arr = numpy.array(image)
             pixels = numpy.vstack(arr) / 256.
             # Prepare matrices for red, green, blue, alpha
-            rgb = pixels[:, :3]
-            r = pixels[:, 0]
-            g = pixels[:, 1]
-            b = pixels[:, 2]
-            a = pixels[:, 3]
-            # Conversion to HSL: see [http://en.wikipedia.org/wiki/HSL_and_HSV]
-            # Get min/max RGB, and min-max, for each pixel
-            c_max = numpy.amax(rgb, 1)
-            c_min = numpy.amin(rgb, 1)
-            c_diff = c_max - c_min
-            # Compute hue
-            hue = numpy.select(
-                    [c_max == c_min, c_max == r, c_max == g, c_max == b],
-                    [
-                            0,
-                            60.0 * ((g - b) / c_diff) + 360,
-                            60.0 * ((b - r) / c_diff) + 120,
-                            60.0 * ((r - g) / c_diff) + 240.0,
-                        ]
-                )
-            hue %= 360  # Normalize angle
-            # Get luminance & stauration
-            lum = 0.5 * (c_max + c_min)
-            sat = numpy.select(
-                    [c_max == c_min, lum < 0.5, lum >= 0.5],
-                    [
-                            0,
-                            (c_max - c_min) / (2.0 * lum),
-                            (c_max - c_min) / (2.0 - (2.0 * lum)),
-                        ]
-                )
+            r, g, b, a, hue, sat, lum = get_rgba_hsl(pixels)
+
+            luminance = lum.flatten()
+            sobel = do_sobel(luminance, image.size[1], image.size[0])
 
             # Now for colors: get boolean mask for white, black, grey pixels
             white = (lum > settings.spc_thresholds[0]/100) * a
@@ -130,7 +148,7 @@ def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_d
             p_white, p_black, p_gray, p_red, p_orange, p_yellow, p_green, p_blue, p_purple, p_pink = color_percentages
 
             # Averages for saturation and lightness are easy
-            avg_s, avg_l = numpy.average([sat, lum], 1, weights=a)
+            avg_s, avg_l, avg_sobel = numpy.average([sat, lum, sobel], 1, weights=a)
             stddev_s = weighted_std(sat, a, avg_s)
             stddev_l = weighted_std(lum, a, avg_l)
             # But hue is an angle, so we need to take the average of
@@ -186,7 +204,13 @@ def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_d
                             a,
                         )), dtype=numpy.uint8)
                     print arr.sum(), arr.size
-                    arr = numpy.hstack((orig_arr, arr))
+                    sob_arr = numpy.array(numpy.dstack(x.reshape((image.size[1], image.size[0])) * 255 for x in (
+                            numpy.clip(sobel / 4, 0, 1),
+                            numpy.clip(sobel / 2, 0, 1),
+                            numpy.clip(sobel / 1, 0, 1),
+                            a,
+                        )), dtype=numpy.uint8)
+                    arr = numpy.hstack((orig_arr, arr, sob_arr))
                     new_img = Image.fromarray(arr)
                     print new_img
                     #new_img = Image.fromarray(numpy.dstack(x.reshape(image.size)*256 for x in (red, green, blue)), 'RGB')

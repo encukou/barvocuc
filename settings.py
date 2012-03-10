@@ -39,7 +39,16 @@ GRY = .5, .5, .5
 
 class Settings(object):
     def __init__(self):
-        self.colors = [RED, RED_ORG, ORG, ORG_YLW, YLW, YLW_GRN, GRN, GRN_BLU, BLU, BLU_PUR, PUR, PUR_PNK, PNK, PNK_RED]
-        self.spc_colors = [WHI, BLK, GRY]
-        self.thresholds = [10, 20, 40, 50, 85, 90, 175, 185, 265, 275, 310, 320, 335, 350]
-        self.spc_thresholds = [80, 20, 20]
+        self.fix()
+
+    def fix(self):
+        self._setdefault('colors', RED, RED_ORG, ORG, ORG_YLW, YLW, YLW_GRN, GRN, GRN_BLU, BLU, BLU_PUR, PUR, PUR_PNK, PNK, PNK_RED)
+        self._setdefault('spc_colors', WHI, BLK, GRY)
+        self._setdefault('thresholds', 10, 20, 40, 50, 85, 90, 175, 185, 265, 275, 310, 320, 335, 350)
+        self._setdefault('spc_thresholds', 80, 20, 20)
+
+    def _setdefault(self, name, *defaults):
+        """Fix list attribute after loading - make sure it's a list, and add missing values from defaults"""
+        attr = getattr(self, name, [])
+        setattr(self, name, attr)
+        attr.extend(defaults[len(attr):])
