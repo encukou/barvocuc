@@ -26,17 +26,11 @@ class ImageAnalyzer:
         # RGBA
         image = image.convert('RGBA')
 
-        # Crop
-        bbox = image.getbbox()
-        bbox_x1, bbox_y1, bbox_x2, bbox_y2 = bbox
-        bbox_width = bbox_x2 - bbox_x1
-        bbox_height = bbox_y2 - bbox_y1
-        if not bbox:
-            raise AssertionError('Empty image')
-        image = image.crop(bbox)
-
         # Get individual pixels
         self.arrays['rgba'] = arr = numpy.array(image) / 256.
+
+        self.results['width'] = image.width
+        self.results['height'] = image.height
 
     _array_factories = {}
     _result_factories = {}

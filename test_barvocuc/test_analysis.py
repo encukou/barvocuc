@@ -44,6 +44,9 @@ def test_matrix_shapes_channel(analysis, channel):
 @pytest.mark.parametrize(
     ['name', 'result'],
     [
+        ('width', 416),
+        ('height', 200),
+
         ('opaque_pixels', 82498.03125),
         ('opacity', 0.9915628756),
 
@@ -74,6 +77,9 @@ def test_concrete_result(analysis, name, result):
 @pytest.mark.parametrize(
     ['name', 'result'],
     [
+        ('width', 416),
+        ('height', 200),
+
         ('opaque_pixels', 82498.03125),
         ('opacity', 0.9915628756),
 
