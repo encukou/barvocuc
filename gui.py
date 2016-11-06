@@ -20,7 +20,7 @@ class Gui(object):
         self.threads = set()
 
         self.win = win = QtWidgets.QDialog()
-        win.setWindowTitle(u"Papoušci")
+        win.setWindowTitle(u"Barvocuc")
 
         layout = QtWidgets.QVBoxLayout(win)
 
