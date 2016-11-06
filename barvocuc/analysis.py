@@ -12,7 +12,7 @@ not_ = numpy.logical_not
 
 
 class ImageAnalyzer:
-    def __init__(self, image, settings=None):
+    def __init__(self, image, *, settings=None):
         if not isinstance(image, Image.Image):
             image = Image.open(image)
 
@@ -176,7 +176,6 @@ class ImageAnalyzer:
             a = self.arrays['a']
             a = numpy.reshape(a, a.shape[0] * a.shape[1])
             src = numpy.reshape(self.arrays[_name], a.shape)
-            print(src.shape, self.arrays[_name].shape, _name)
             avg = numpy.average(src, weights=a)
             stddev = weighted_stddev(src, weights=a, mean=avg)
             return avg, stddev
