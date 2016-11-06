@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 from __future__ import print_function
-from PySide import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 import yaml
 
 import numpy
@@ -15,14 +15,14 @@ class Gui(object):
     currentLine = 0
 
     def __init__(self, argv):
-        self.app = QtGui.QApplication(argv)
+        self.app = QtWidgets.QApplication(argv)
 
         self.threads = set()
 
-        self.win = win = QtGui.QDialog()
+        self.win = win = QtWidgets.QDialog()
         win.setWindowTitle(u"Papoušci")
 
-        layout = QtGui.QVBoxLayout(win)
+        layout = QtWidgets.QVBoxLayout(win)
 
         self.names = u"Červená Oranžová Žlutá Zelená Modrá Fialová Růžová".split()
         self.spc_names = u"Bílá Černá Šedá".split()
@@ -35,18 +35,18 @@ class Gui(object):
 
         for i, (name, name_next, prim_color, trans_color) in enumerate(zip(self.names, self.names[1:] + [self.names[0]], self.settings.colors[::2], self.settings.colors[1::2])):
             def scope(i, name, prim_color, trans_color):
-                btnColor = QtGui.QPushButton()
-                label = QtGui.QLabel(name + ":")
+                btnColor = QtWidgets.QPushButton()
+                label = QtWidgets.QLabel(name + ":")
                 label.setMinimumWidth(100)
-                label.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-                spin_min = QtGui.QSpinBox()
+                label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                spin_min = QtWidgets.QSpinBox()
                 spin_min.setMaximum(360)
-                spin_max = QtGui.QSpinBox()
+                spin_max = QtWidgets.QSpinBox()
                 spin_max.setMaximum(360)
-                label2 = QtGui.QLabel(name + "+" + name_next + ":")
+                label2 = QtWidgets.QLabel(name + "+" + name_next + ":")
                 label2.setMinimumWidth(150)
-                label2.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-                btnColor2 = QtGui.QPushButton()
+                label2.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                btnColor2 = QtWidgets.QPushButton()
 
                 self.spinners[self.start_index(i)] = spin_min
                 self.spinners[self.end_index(i)] = spin_max
@@ -65,23 +65,23 @@ class Gui(object):
                         self.update_minmax(i - 1)
                     self.update_picture()
 
-                spin_max.connect(QtCore.SIGNAL('valueChanged(int)'), lambda v: set_max(v))
-                spin_min.connect(QtCore.SIGNAL('valueChanged(int)'), lambda v: set_min(v))
+                spin_max.valueChanged.connect(lambda v: set_max(v))
+                spin_min.valueChanged.connect(lambda v: set_min(v))
 
-                layoutR = QtGui.QHBoxLayout()
+                layoutR = QtWidgets.QHBoxLayout()
                 layoutR.addWidget(label)
                 layoutR.addWidget(btnColor)
                 layoutR.addWidget(spin_min)
-                layoutR.addWidget(QtGui.QLabel(u"-"))
+                layoutR.addWidget(QtWidgets.QLabel(u"-"))
                 layoutR.addWidget(spin_max)
-                layoutR.addWidget(QtGui.QLabel(u"°"))
+                layoutR.addWidget(QtWidgets.QLabel(u"°"))
                 layoutR.addWidget(label2)
                 layoutR.addWidget(btnColor2)
                 layoutR.addStretch()
                 layout.addLayout(layoutR)
 
-                btnColor.connect(QtCore.SIGNAL('clicked()'), lambda: self.getSetColor(btnColor, self.settings.colors, i * 2))
-                btnColor2.connect(QtCore.SIGNAL('clicked()'), lambda: self.getSetColor(btnColor2, self.settings.colors, i * 2 + 1))
+                btnColor.clicked.connect(lambda: self.getSetColor(btnColor, self.settings.colors, i * 2))
+                btnColor2.clicked.connect(lambda: self.getSetColor(btnColor2, self.settings.colors, i * 2 + 1))
                 self.color_set_params.append((btnColor, 'colors', i * 2))
                 self.color_set_params.append((btnColor2, 'colors', i * 2 + 1))
 
@@ -90,11 +90,11 @@ class Gui(object):
         self.spc_spinners = [None] * len(self.spc_names)
         for i, (name, color) in enumerate(zip(self.spc_names, self.settings.spc_colors)):
             def scope(i, name, prim_color, trans_color):
-                btnColor = QtGui.QPushButton()
-                label = QtGui.QLabel(name + ":")
+                btnColor = QtWidgets.QPushButton()
+                label = QtWidgets.QLabel(name + ":")
                 label.setMinimumWidth(100)
-                label.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-                spin = QtGui.QSpinBox()
+                label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                spin = QtWidgets.QSpinBox()
                 spin.setMaximum(100)
                 self.spc_spinners[i] = spin
 
@@ -102,47 +102,47 @@ class Gui(object):
                     self.settings.spc_thresholds[i] = val
                     self.update_picture()
 
-                spin.connect(QtCore.SIGNAL('valueChanged(int)'), lambda v: set(v))
+                spin.valueChanged.connect(lambda v: set(v))
 
-                layoutR = QtGui.QHBoxLayout()
+                layoutR = QtWidgets.QHBoxLayout()
                 layoutR.addWidget(label)
                 layoutR.addWidget(btnColor)
                 layoutR.addWidget(spin)
-                layoutR.addWidget(QtGui.QLabel("%"))
+                layoutR.addWidget(QtWidgets.QLabel("%"))
                 layoutR.addStretch()
                 layout.addLayout(layoutR)
 
-                btnColor.connect(QtCore.SIGNAL('clicked()'), lambda: self.getSetColor(btnColor, self.settings.spc_colors, i))
+                btnColor.clicked.connect(lambda: self.getSetColor(btnColor, self.settings.spc_colors, i))
                 self.color_set_params.append((btnColor, 'spc_colors', i))
 
             scope(i, name, prim_color, trans_color)
 
-        layoutR = QtGui.QHBoxLayout()
-        label = QtGui.QLabel("Hrany:")
+        layoutR = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Hrany:")
         label.setMinimumWidth(100)
-        label.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         layoutR.addWidget(label)
-        self.contrast_show_checkbox = QtGui.QCheckBox(u'Ukázat')
+        self.contrast_show_checkbox = QtWidgets.QCheckBox(u'Ukázat')
         layoutR.addWidget(self.contrast_show_checkbox)
-        self.contrast_show_checkbox.connect(QtCore.SIGNAL('clicked()'), self.update_picture)
+        self.contrast_show_checkbox.clicked.connect(self.update_picture)
         layoutR.addStretch()
         layout.addLayout(layoutR)
 
-        bOpen = QtGui.QPushButton(u"Otevřít obrázek")
-        bOpen.connect(QtCore.SIGNAL('clicked()'), self.do_open)
+        bOpen = QtWidgets.QPushButton(u"Otevřít obrázek")
+        bOpen.clicked.connect(self.do_open)
 
-        bOpenSettings = QtGui.QPushButton(u"Načíst nastavení")
-        bOpenSettings.connect(QtCore.SIGNAL('clicked()'), self.openSettings)
+        bOpenSettings = QtWidgets.QPushButton(u"Načíst nastavení")
+        bOpenSettings.clicked.connect(self.openSettings)
 
-        bSaveSettings = QtGui.QPushButton(u"Uložit nastavení")
-        bSaveSettings.connect(QtCore.SIGNAL('clicked()'), self.saveSettings)
+        bSaveSettings = QtWidgets.QPushButton(u"Uložit nastavení")
+        bSaveSettings.clicked.connect(self.saveSettings)
 
-        bProcess = QtGui.QPushButton(u"Zpracovat adresář")
-        bProcess.connect(QtCore.SIGNAL('clicked()'), self.doDir)
+        bProcess = QtWidgets.QPushButton(u"Zpracovat adresář")
+        bProcess.clicked.connect(self.doDir)
 
-        self.progress = QtGui.QProgressBar()
+        self.progress = QtWidgets.QProgressBar()
 
-        layoutR = QtGui.QHBoxLayout()
+        layoutR = QtWidgets.QHBoxLayout()
         layoutR.addWidget(bOpen)
         layoutR.addWidget(bOpenSettings)
         layoutR.addWidget(bSaveSettings)
@@ -151,46 +151,46 @@ class Gui(object):
         layoutR.addStretch()
         layout.addLayout(layoutR)
 
-        layoutR = QtGui.QHBoxLayout()
-        layoutR.addWidget(QtGui.QLabel(u'Zdrojový adresář:'))
-        self.srcdir = QtGui.QLineEdit()
+        layoutR = QtWidgets.QHBoxLayout()
+        layoutR.addWidget(QtWidgets.QLabel(u'Zdrojový adresář:'))
+        self.srcdir = QtWidgets.QLineEdit()
         self.srcdir.setMinimumWidth(100)
-        self.srcdir_select = QtGui.QPushButton('Vybrat...')
+        self.srcdir_select = QtWidgets.QPushButton('Vybrat...')
         layoutR.addWidget(self.srcdir)
         layoutR.addWidget(self.srcdir_select)
         def select_srcdir():
-            s = QtGui.QFileDialog.getExistingDirectory(self.win, u"Zdrojový adresář")
+            s = QtWidgets.QFileDialog.getExistingDirectory(self.win, u"Zdrojový adresář")
             if s:
                 self.srcdir.setText(s)
-        self.srcdir_select.connect(QtCore.SIGNAL('clicked()'), select_srcdir)
+        self.srcdir_select.clicked.connect(select_srcdir)
         layoutR.addStretch()
         layout.addLayout(layoutR)
 
-        layoutR = QtGui.QHBoxLayout()
-        layoutR.addWidget(QtGui.QLabel(u'Cílový adresář:'))
-        self.destdir = QtGui.QLineEdit()
+        layoutR = QtWidgets.QHBoxLayout()
+        layoutR.addWidget(QtWidgets.QLabel(u'Cílový adresář:'))
+        self.destdir = QtWidgets.QLineEdit()
         self.destdir.setMinimumWidth(100)
-        self.destdir_select = QtGui.QPushButton('Vybrat...')
+        self.destdir_select = QtWidgets.QPushButton('Vybrat...')
         layoutR.addWidget(self.destdir)
         layoutR.addWidget(self.destdir_select)
         def select_destdir():
-            s = QtGui.QFileDialog.getExistingDirectory(self.win, u"Zdrojový adresář")
+            s = QtWidgets.QFileDialog.getExistingDirectory(self.win, u"Zdrojový adresář")
             if s:
                 self.destdir.setText(s)
-        self.destdir_select.connect(QtCore.SIGNAL('clicked()'), select_destdir)
+        self.destdir_select.clicked.connect(select_destdir)
         layoutR.addStretch()
         layout.addLayout(layoutR)
 
-        self.sourceLabel = QtGui.QLabel()
-        self.schemaLabel = QtGui.QLabel()
+        self.sourceLabel = QtWidgets.QLabel()
+        self.schemaLabel = QtWidgets.QLabel()
 
-        layoutR = QtGui.QHBoxLayout()
+        layoutR = QtWidgets.QHBoxLayout()
         layoutR.addWidget(self.sourceLabel)
         layoutR.addWidget(self.schemaLabel)
         layout.addLayout(layoutR)
 
         self.workTimer = QtCore.QTimer()
-        self.workTimer.connect(QtCore.SIGNAL('timeout()'), self.work)
+        self.workTimer.timeout.connect(self.work)
 
         if argv[1:]:
             path = self.do_open(argv[1])
@@ -244,7 +244,7 @@ class Gui(object):
 
     def do_open(self, path=None):
         if not path:
-            path, dummy = QtGui.QFileDialog.getOpenFileName()
+            path, dummy = QtWidgets.QFileDialog.getOpenFileName()
         if not path:
             return None
         self.source_path = path
@@ -353,12 +353,12 @@ class Gui(object):
             self.schemaLabel.setPixmap(QtGui.QPixmap(schema))
 
     def saveSettings(self):
-        path, dummy = QtGui.QFileDialog.getSaveFileName()
+        path, dummy = QtWidgets.QFileDialog.getSaveFileName()
         if path:
             yaml.dump(self.settings, open(path, 'w'))
 
     def openSettings(self):
-        path, dummy = QtGui.QFileDialog.getOpenFileName()
+        path, dummy = QtWidgets.QFileDialog.getOpenFileName()
         if path:
             self.settings = yaml.load(open(path))
             self.settings.fix()
@@ -368,31 +368,31 @@ class Gui(object):
         path = self.srcdir.text()
         path2 = self.destdir.text()
         if path:
-            display = QtGui.QTextEdit()
+            display = QtWidgets.QTextEdit()
             display.setReadOnly(True)
             display.setWindowTitle(u"Výstup")
             display.show()
             text = [u'']
             class PseudoFile(object):
                 def write(slf, string):
-                    text[0] += string.decode('utf-8')
+                    text[0] += string
                     display.setPlainText(text[0])
-                    QtGui.QApplication.instance().processEvents()
+                    QtWidgets.QApplication.instance().processEvents()
             if path2:
                 kwargs = dict(output_dir=str(path2))
             else:
                 kwargs = {}
             pocitej.main(str(path), PseudoFile(), self.settings, **kwargs)
         else:
-            QtGui.QMessageBox.critical(self.win, u'...', u'Zadej vstupní adresář.')
+            QtWidgets.QMessageBox.critical(self.win, u'...', u'Zadej vstupní adresář.')
 
     def getSetColor(self, btn, lst, index):
-        color = QtGui.QColorDialog.getColor(QtGui.QColor(*(x*255 for x in lst[index])))
+        color = QtWidgets.QColorDialog.getColor(QtGui.QColor(*(x*255 for x in lst[index])))
         if color.isValid():
             self.setColor(btn, lst, index, (color.red()/255., color.green()/255., color.blue()/255.))
 
     def setColor(self, btn, lst, index, color):
-        btn.setStyleSheet("QPushButton { background-color: #%02X%02X%02X}" % tuple(x*255 for x in color))
+        btn.setStyleSheet("QPushButton { background-color: #%02X%02X%02X}" % tuple(int(x*255) for x in color))
         lst[index] = color
         self.update_picture()
 
