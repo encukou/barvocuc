@@ -1,5 +1,6 @@
 # Encoding: UTF-8
 
+from __future__ import print_function
 from PySide import QtCore, QtGui
 import yaml
 
@@ -9,7 +10,7 @@ from PIL import Image
 from settings import Settings
 import pocitej
 
-class Gui():
+class Gui(object):
     _block = False
     currentLine = 0
 
@@ -198,7 +199,7 @@ class Gui():
             self.schema = None
 
         if path:
-            print path
+            print(path)
 
         self.reloadSettings()
 
@@ -269,10 +270,10 @@ class Gui():
             w, h = self.schema.width(), self.schema.height()
             alpha = a.reshape((h, w))
             sob = pocitej.do_sobel(lum, h, w).reshape((h, w))
-            print sob.shape
+            print(sob.shape)
 
             bgra = numpy.empty((h, w, 4), numpy.uint8, 'C')
-            print h, w, sob.shape
+            print(h, w, sob.shape)
             bgra[...,0] = 255 * (sob / 1).clip(0, 1)
             bgra[...,1] = 255 * (sob / 2).clip(0, 1)
             bgra[...,2] = 255 * (sob / 4).clip(0, 1)

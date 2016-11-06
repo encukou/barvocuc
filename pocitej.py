@@ -1,6 +1,6 @@
 # Encoding: UTF-8
 
-from __future__ import division
+from __future__ import print_function
 
 import os
 import csv
@@ -84,9 +84,9 @@ def do_sobel(luminance, w, h):
 
 def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_dir=None):
     # Open file
-    if isinstance(outfile, basestring):
+    if isinstance(outfile, (str, bytes)):
         outfile = open(outfile, 'w')
-    if isinstance(settings, basestring):
+    if isinstance(settings, (str, bytes)):
         settings = yaml.load(open(settings, 'r'))
         settings.fix()
     out = csv.writer(outfile)
@@ -103,7 +103,7 @@ def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_d
     for i, filename in enumerate(filenames):
         try:
             error = ''
-            print "%4d/%4d - %s" % (i, total, filename)
+            print("%4d/%4d - %s" % (i, total, filename))
             # Open image
             path = os.path.join(basedir, filename)
             image = Image.open(path)
@@ -174,14 +174,14 @@ def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_d
             # Write it all out!
             loc = locals()
             out.writerow([loc[val[0]] for val in report_values])
-            print ' ' * 11, 'OK'
-        except Exception, e:
+            print(' ' * 11, 'OK')
+        except Exception as e:
             error = "%s: %s" % (type(e).__name__, e)
             loc = dict(filename=filename, error=error)
             out.writerow([loc.get(val[0], '') for val in report_values])
-            print ' ' * 11, 'Chyba:', error
+            print(' ' * 11, 'Chyba:', error)
             import traceback
-            print traceback.format_exc()
+            print(traceback.format_exc())
         else:
             try:
                 if output_dir:
@@ -193,17 +193,17 @@ def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_d
                         next = base_colors[(i + 1) % len(base_colors)]
                         colors.append(and_(color, not_(or_(prev, next))))
                         colors.append(and_(color, next))
-                    print colors
+                    print(colors)
                     r, g, b = zip(*(settings.spc_colors + settings.colors))
-                    print len(colors), len(r)
-                    print r, g, b
+                    print(len(colors), len(r))
+                    print(r, g, b)
                     arr = numpy.array(numpy.dstack(x.reshape((image.size[1], image.size[0])) * 255 for x in (
                             numpy.sum(c * color for c, color in zip(r, colors)),
                             numpy.sum(c * color for c, color in zip(g, colors)),
                             numpy.sum(c * color for c, color in zip(b, colors)),
                             a,
                         )), dtype=numpy.uint8)
-                    print arr.sum(), arr.size
+                    print(arr.sum(), arr.size)
                     sob_arr = numpy.array(numpy.dstack(x.reshape((image.size[1], image.size[0])) * 255 for x in (
                             numpy.clip(sobel / 4, 0, 1),
                             numpy.clip(sobel / 2, 0, 1),
@@ -212,12 +212,12 @@ def main(basedir='obrazky', outfile='obrazky.csv', settings=Settings(), output_d
                         )), dtype=numpy.uint8)
                     arr = numpy.hstack((orig_arr, arr, sob_arr))
                     new_img = Image.fromarray(arr)
-                    print new_img
+                    print(new_img)
                     #new_img = Image.fromarray(numpy.dstack(x.reshape(image.size)*256 for x in (red, green, blue)), 'RGB')
                     new_img.save(os.path.join(output_dir, filename))
-            except Exception, e:
+            except Exception as e:
                 import traceback
-                print traceback.format_exc()
+                print(traceback.format_exc())
 
 def weighted_std(values, weights, mean):
     """Weighted standard deviation given values, weights, and the values' weighted mean
