@@ -3,6 +3,7 @@
 from __future__ import print_function
 from PyQt5 import QtCore, QtGui, QtWidgets
 import yaml
+import sys
 
 import numpy
 from PIL import Image
@@ -397,7 +398,10 @@ class Gui(object):
         self.update_picture()
 
 
-if __name__ == '__main__':
-    import sys
+def main():
     gui = Gui(sys.argv)
     gui.run()
+
+
+if __name__ == '__main__':
+    main()
