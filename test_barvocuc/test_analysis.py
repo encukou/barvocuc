@@ -74,6 +74,30 @@ def test_concrete_result(analysis, name, result):
     assert math.isclose(analysis.results[name], result)
 
 
+def test_csv_results(analysis):
+    assert analysis.csv_results == {
+        'width': 416,
+        'height': 200,
+        'white%': 6.3558334914810475,
+        'black%': 31.404324231979778,
+        'gray%': 6.0896955116731952,
+        'red%': 17.129599115433436,
+        'orange%': 9.3019265232465767,
+        'yellow%': 8.2080036379656018,
+        'green%': 12.770134287295493,
+        'blue%': 12.112789055193362,
+        'purple%': 5.8982231394158271,
+        'pink%': 2.6635578803585083,
+        'avg_h': 18.098829337769523,
+        'avg_s': 0.78014070333343444,
+        'avg_l': 0.35956495527950216,
+        'stddev_h': 86.920361156144907,
+        'stddev_s': 0.34165645620949558,
+        'stddev_l': 0.24915639167285492,
+        'avg_sobel': 0.29684081705986493,
+    }
+
+
 @pytest.mark.parametrize(
     ['name', 'result'],
     [

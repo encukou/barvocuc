@@ -159,18 +159,15 @@ class ImageAnalyzer:
         opacity = num_opaque_pixels / (a.shape[0] * a.shape[1])
         return num_opaque_pixels, opacity
 
-    @_make_results(*COLOR_NAMES, *SPECIAL_NAMES)
-    def make_color_ratios(self):
-        a = self.arrays['a']
-        opx = self.results['opaque_pixels']
+    for name in COLOR_NAMES + SPECIAL_NAMES:
 
-        results = []
-        for color in self.color_masks + self.special_masks:
+        @_make_results(name, name + '%')
+        def make_color_ratios(self, _name=name):
+            a = self.arrays['a']
+            opx = self.results['opaque_pixels']
+            color = self.arrays[_name]
             result = numpy.sum(color * a) / opx
-            results.append(result)
-
-        self._color_percentages = tuple(results)
-        return results
+            return result, result * 100
 
     for name in 'r', 'g', 'b', 's', 'l', 'sobel', 'sobel_x', 'sobel_y':
 
@@ -221,6 +218,10 @@ class ImageAnalyzer:
             avg_h = avg_hue = stddev_h = numpy.nan
 
         return avg_h, stddev_h
+
+    @property
+    def csv_results(self):
+        return {n: self.results[n] for n in self.settings.csv_output_fields}
 
 
 def weighted_stddev(values, *, weights, mean):
