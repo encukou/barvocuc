@@ -1,8 +1,8 @@
 import os
-
-from .analysis import ImageAnalyzer
+import sys
 import csv
 
+from .analysis import ImageAnalyzer
 from .settings import Settings
 
 
@@ -26,29 +26,39 @@ def format_exc(e):
     return '{}: {}'.format(type(e).__name__, e)
 
 
-def generate_csv(csv_file, paths, *, settings=None):
+def generate_csv(csv_file, paths, *, settings=None, outdir=None):
     if settings is None:
         settings = Settings()
 
+    if outdir is not None:
+        outdir = os.path.abspath(outdir)
+        os.makedirs(outdir, exist_ok=True)
+
     output_fields = settings.csv_output_fields
 
-    writer = csv.writer(csv_file, lineterminator='\n')
+    writers = [csv.writer(csv_file, lineterminator='\n')]
+    if outdir:
+        outfile = open(os.path.join(outdir, 'out.csv'), 'w')
+        writers.append(csv.writer(outfile, lineterminator='\n'))
+
+    def writerow(row):
+        row = tuple(row)
+        for writer in writers:
+            writer.writerow(row)
 
     paths = sorted(generate_paths(paths))
     prefix = os.path.commonpath(paths)
 
-    writer.writerow([
+    writerow(
         settings.field_names[n]
-        for n in ('filename', *settings.csv_output_fields, 'error')
-        ])
+        for n in ('filename', *settings.csv_output_fields, 'error'))
 
     for path in paths:
         relpath = os.path.relpath(path, prefix)
         try:
             analyzer = ImageAnalyzer(path, settings=settings)
         except Exception as e:
-            writer.writerow((relpath, *['' for _ in output_fields],
-                             format_exc(e)))
+            writerow((relpath, *['' for _ in output_fields], format_exc(e)))
         else:
             values = []
             errors = {}
@@ -59,7 +69,7 @@ def generate_csv(csv_file, paths, *, settings=None):
                     value = ''
                     errors.setdefault(format_exc(e), []).append(field)
                 values.append(str(value))
-            writer.writerow((
+            writerow((
                 relpath,
                 *values,
                 '; '.join(
@@ -67,3 +77,16 @@ def generate_csv(csv_file, paths, *, settings=None):
                     for msg, fields in errors.items()
                     ),
                 ))
+            if outdir:
+                for name in settings.output_images:
+                    filename = os.path.join(outdir, name, relpath)
+                    try:
+                        image = analyzer.images[name]
+                        os.makedirs(os.path.dirname(filename), exist_ok=True)
+                        image.save(filename)
+                    except Exception as e:
+                        print('Error saving image "{}" to {}: {}'.format(
+                            name, filename, format_exc(e)), file=sys.stderr)
+
+    if outdir:
+        outfile.close()

@@ -22,6 +22,7 @@ class ImageAnalyzer:
 
         self.arrays = _FillDict(self._array_factories, self)
         self.results = _FillDict(self._result_factories, self)
+        self.images = _FillDict(self._image_factories, self)
 
         # RGBA
         image = image.convert('RGBA')
@@ -29,11 +30,12 @@ class ImageAnalyzer:
         # Get individual pixels
         self.arrays['rgba'] = arr = numpy.array(image) / 256.
 
-        self.results['width'] = image.width
-        self.results['height'] = image.height
+        self.results['width'] = self.width = image.width
+        self.results['height'] = self.height = image.height
 
     _array_factories = {}
     _result_factories = {}
+    _image_factories = {}
 
     def _resultmaker(attr_name, factories):
         def _maker(*names):
@@ -51,6 +53,7 @@ class ImageAnalyzer:
 
     _make_arrays = _resultmaker('arrays', _array_factories)
     _make_results = _resultmaker('results', _result_factories)
+    _make_images = _resultmaker('images', _image_factories)
 
     @_make_arrays('r', 'g', 'b', 'a', 'h', 's', 'l')
     def make_rgbahsl(self):
@@ -191,7 +194,7 @@ class ImageAnalyzer:
         sat = self.arrays['s']
         lum = self.arrays['l']
         colorful = self.arrays['colorful']
-        hue_weight = sat * (1 - 2 * numpy.abs(lum - 0.5) % 1) * a       # XXX: unused
+        hue_weight = sat * (1 - 2 * numpy.abs(lum - 0.5) % 1) * a
         hue_weight = colorful * a
         num_pixels = a.shape[0] * a.shape[1]
 
@@ -221,6 +224,57 @@ class ImageAnalyzer:
     @property
     def csv_results(self):
         return {n: self.results[n] for n in self.settings.csv_output_fields}
+
+    @_make_images('source')
+    def make_source_image(self):
+        rgba = self.arrays['rgba']
+        return Image.fromarray(numpy.uint8(rgba * 255)),
+
+    @_make_images('colors')
+    def make_source_image(self):
+        result = numpy.zeros((self.height, self.width, 4), dtype=float)
+
+        base_colors = self.color_masks
+        b = lambda a: numpy.array(a, dtype=bool)
+        masks = list(self.special_masks[:3])
+        for color in base_colors:
+            masks.append(color)
+        for i, color in enumerate(base_colors):
+            next = base_colors[(i + 1) % len(base_colors)]
+            masks.append(and_(color, next))
+
+        colors = (self.settings.special_display_colors
+                  + self.settings.main_display_colors
+                  +self.settings.transition_display_colors)
+
+        for mask, color in zip(masks, colors):
+            result[mask, :3] = color
+
+        result[..., 3] = self.arrays['a']
+        return Image.fromarray(numpy.uint8(result * 255)),
+
+    @_make_images('sobel')
+    def make_sobel_image(self):
+        def normalize(arr):
+            abs_arr = abs(arr)
+            return abs_arr / numpy.max(abs_arr)
+        result = numpy.dstack((
+            normalize(self.arrays['sobel']) ** 2,
+            normalize(self.arrays['sobel']),
+            normalize(self.arrays['sobel']) ** 0.5,
+            self.arrays['a'],
+        ))
+        return Image.fromarray(numpy.uint8(result * 255)),
+
+    @_make_images('opacity')
+    def make_sobel_image(self):
+        result = numpy.dstack((
+            1-self.arrays['a'],
+            1-self.arrays['a'],
+            1-self.arrays['a'],
+            numpy.ones((self.height, self.width)),
+        ))
+        return Image.fromarray(numpy.uint8(result * 255)),
 
 
 def weighted_stddev(values, *, weights, mean):

@@ -81,6 +81,33 @@ class Settings:
 
         self.lang = 'en'
 
+        self.output_images = [
+            'source', 'colors', 'sobel', 'opacity'
+        ]
+
+        self.special_display_colors = [
+            (1, 1, 1),
+            (.5, .5, .5),
+            (0, 0, 0),
+        ]
+        self.main_display_colors = [
+            (1, 0, 0),
+            (1, 0.5, 0),
+            (1, 1, 0),
+            (0, 1, 0),
+            (0, 0, 1),
+            (1, 0, 1),
+            (1, 0, 0.5),
+        ]
+        self.transition_display_colors = [
+            (0.5, 0, 0),
+            (0.5, 0.25, 0),
+            (0.5, 0.5, 0),
+            (0, 0.5, 0.5),
+            (0, 0, 0.5),
+            (0.5, 0, 0.5),
+            (0.5, 0, 0.25),
+        ]
 
     @property
     def lang(self):
