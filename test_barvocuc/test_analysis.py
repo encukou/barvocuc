@@ -9,8 +9,8 @@ from barvocuc import ImageAnalyzer
 basedir = os.path.dirname(__file__)
 
 
-TEST_IMG_W = 200
-TEST_IMG_H = 416
+TEST_IMG_W = 416
+TEST_IMG_H = 200
 
 
 def open_analyzer(test_file_name):
@@ -28,7 +28,7 @@ def analysis_gray():
     return open_analyzer('palette_test_gray.png')
 
 def test_matrix_shape_rgba(analysis):
-    assert analysis.arrays['rgba'].shape == (TEST_IMG_W, TEST_IMG_H, 4)
+    assert analysis.arrays['rgba'].shape == (TEST_IMG_H, TEST_IMG_W, 4)
 
 
 @pytest.mark.parametrize('channel', ['r', 'g', 'b', 'a', 'h', 's', 'l',
@@ -38,7 +38,14 @@ def test_matrix_shape_rgba(analysis):
                                      'blue', 'purple', 'pink',
                                      ])
 def test_matrix_shapes_channel(analysis, channel):
-    assert analysis.arrays[channel].shape == (TEST_IMG_W, TEST_IMG_H)
+    assert analysis.arrays[channel].shape == (TEST_IMG_H, TEST_IMG_W)
+
+
+@pytest.mark.parametrize('name', ['rgba', 'img_source', 'img_sobel',
+                                  'img_colors', 'img_opacity',
+                                  ])
+def test_matrix_shapes_img(analysis, name):
+    assert analysis.arrays[name].shape == (TEST_IMG_H, TEST_IMG_W, 4)
 
 
 @pytest.mark.parametrize(
@@ -151,3 +158,14 @@ def test_gray_complete(analysis_gray):
     ])
 def test_hues(filename, hue):
     assert open_analyzer(filename).results['avg_h'] == hue
+
+
+def test_orig_img_array(analysis):
+    assert (analysis.arrays['img_source'] == analysis.arrays['rgba']).all()
+
+
+@pytest.mark.parametrize('name', ['source', 'sobel',  'colors', 'opacity'])
+def test_img_attrs(analysis, name):
+    assert analysis.images[name].width == TEST_IMG_W
+    assert analysis.images[name].height == TEST_IMG_H
+    assert analysis.images[name].format == 'RGBA'

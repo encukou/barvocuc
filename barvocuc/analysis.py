@@ -44,7 +44,7 @@ class ImageAnalyzer:
                     results = func(self, *args, **kwargs)
                     for result, name in zip(results, names):
                         getattr(self, attr_name)[name] = result
-                    return result
+                    return results
                 for name in names:
                     factories[name] = _decorated
                 return _decorated
@@ -53,7 +53,24 @@ class ImageAnalyzer:
 
     _make_arrays = _resultmaker('arrays', _array_factories)
     _make_results = _resultmaker('results', _result_factories)
-    _make_images = _resultmaker('images', _image_factories)
+
+    def _make_images(*names,
+                     _resultmaker=_resultmaker,
+                     _image_factories=_image_factories,
+                     _make_arrays=_make_arrays):
+        _imgmaker = _resultmaker('images', _image_factories)(*names)
+        _arrmaker = _make_arrays(*('img_' + n for n in names))
+        def _decorator(func):
+            _arrmaker(func)
+            def _mkimage(self, name):
+                array = self.arrays['img_' + name]
+                img = Image.fromarray(numpy.uint8(array * 255))
+                img.format = 'RGBA'
+                return img
+            def _mkresults(self, *args, **kwargs):
+                return tuple(_mkimage(self, name) for name in names)
+            return _imgmaker(_mkresults)
+        return _decorator
 
     @_make_arrays('r', 'g', 'b', 'a', 'h', 's', 'l')
     def make_rgbahsl(self):
@@ -228,7 +245,7 @@ class ImageAnalyzer:
     @_make_images('source')
     def make_source_image(self):
         rgba = self.arrays['rgba']
-        return Image.fromarray(numpy.uint8(rgba * 255)),
+        return [rgba]
 
     @_make_images('colors')
     def make_source_image(self):
@@ -251,7 +268,7 @@ class ImageAnalyzer:
             result[mask, :3] = color
 
         result[..., 3] = self.arrays['a']
-        return Image.fromarray(numpy.uint8(result * 255)),
+        return [result]
 
     @_make_images('sobel')
     def make_sobel_image(self):
@@ -264,7 +281,7 @@ class ImageAnalyzer:
             normalize(self.arrays['sobel']) ** 0.5,
             self.arrays['a'],
         ))
-        return Image.fromarray(numpy.uint8(result * 255)),
+        return [result]
 
     @_make_images('opacity')
     def make_sobel_image(self):
@@ -274,7 +291,7 @@ class ImageAnalyzer:
             1-self.arrays['a'],
             numpy.ones((self.height, self.width)),
         ))
-        return Image.fromarray(numpy.uint8(result * 255)),
+        return [result]
 
 
 def weighted_stddev(values, *, weights, mean):
