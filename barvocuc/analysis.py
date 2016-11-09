@@ -293,6 +293,15 @@ class ImageAnalyzer:
         ))
         return [result]
 
+    @_make_images('montage')
+    def make_sobel_image(self):
+        arrs = self.arrays
+        result = numpy.vstack((
+            numpy.hstack((arrs['img_source'], arrs['img_colors'])),
+            numpy.hstack((arrs['img_sobel'], arrs['img_opacity'])),
+        ))
+        return [result]
+
 
 def weighted_stddev(values, *, weights, mean):
     """Weighted standard deviation given values, weights, and the weighted mean

@@ -82,7 +82,7 @@ class Settings:
         self.lang = 'en'
 
         self.output_images = [
-            'source', 'colors', 'sobel', 'opacity'
+            'source', 'colors', 'sobel', 'opacity', 'montage',
         ]
 
         self.special_display_colors = [

@@ -169,3 +169,9 @@ def test_img_attrs(analysis, name):
     assert analysis.images[name].width == TEST_IMG_W
     assert analysis.images[name].height == TEST_IMG_H
     assert analysis.images[name].format == 'RGBA'
+
+
+def test_montage_attrs(analysis):
+    assert analysis.images['montage'].width == TEST_IMG_W * 2
+    assert analysis.images['montage'].height == TEST_IMG_H * 2
+    assert analysis.images['montage'].format == 'RGBA'
