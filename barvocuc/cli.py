@@ -17,3 +17,9 @@ def cli():
 @click.argument('path', type=click.Path(), nargs=-1)
 def analyze(output, path, outdir):
     generate_csv(output, path, outdir=outdir)
+
+
+@cli.command()
+def gui():
+    from .gui import main
+    return main()
