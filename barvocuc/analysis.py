@@ -194,8 +194,8 @@ class ImageAnalyzer:
         @_make_results('avg_' + name, 'stddev_' + name)
         def _make_linear_stats(self, _name=name):
             a = self.arrays['a']
-            a = numpy.reshape(a, a.shape[0] * a.shape[1])
-            src = numpy.reshape(self.arrays[_name], a.shape)
+            a = a.flatten()
+            src = self.arrays[_name].flatten()
             avg = numpy.average(src, weights=a)
             stddev = weighted_stddev(src, weights=a, mean=avg)
             return avg, stddev
@@ -213,13 +213,12 @@ class ImageAnalyzer:
         colorful = self.arrays['colorful']
         hue_weight = sat * (1 - 2 * numpy.abs(lum - 0.5) % 1) * a
         hue_weight = colorful * a
-        num_pixels = a.shape[0] * a.shape[1]
 
         if numpy.sum(hue_weight).any():
             hue_radians = hue / 180 * numpy.pi
 
-            hue_radians = hue_radians.reshape(num_pixels)
-            hue_weight = hue_weight.reshape(num_pixels)
+            hue_radians = hue_radians.flatten()
+            hue_weight = hue_weight.flatten()
 
             unit_vectors = numpy.array([numpy.sin(hue_radians),
                                         numpy.cos(hue_radians)])
@@ -229,7 +228,7 @@ class ImageAnalyzer:
             avg_h = avg_hue
             # Then to compute hue's std. deviation, normalize it into interval
             # [0, 360] so that the average is roughly at 180°
-            hue_normalized = (hue.reshape(num_pixels) - avg_hue + 180) % 360
+            hue_normalized = (hue.flatten() - avg_hue + 180) % 360
             hue_norm_avg = numpy.average(hue_normalized, weights=hue_weight)
             stddev_h = weighted_stddev(hue_normalized,
                                        weights=hue_weight, mean=hue_norm_avg)
