@@ -90,7 +90,7 @@
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QGraphicsView" name="gv_source">
+      <widget class="SynchronizedGraphicsView" name="gv_source">
        <property name="backgroundBrush">
         <brush brushstyle="Dense3Pattern">
          <color alpha="255">
@@ -248,7 +248,7 @@
    <widget class="QWidget" name="dockWidgetContents_5">
     <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
-      <widget class="QGraphicsView" name="gv_colors">
+      <widget class="SynchronizedGraphicsView" name="gv_colors">
        <property name="backgroundBrush">
         <brush brushstyle="Dense3Pattern">
          <color alpha="255">
@@ -279,7 +279,7 @@
    <widget class="QWidget" name="dockWidgetContents_6">
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
-      <widget class="QGraphicsView" name="gv_sobel">
+      <widget class="SynchronizedGraphicsView" name="gv_sobel">
        <property name="backgroundBrush">
         <brush brushstyle="Dense3Pattern">
          <color alpha="255">
@@ -310,7 +310,7 @@
    <widget class="QWidget" name="dockWidgetContents_7">
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
-      <widget class="QGraphicsView" name="gv_opacity">
+      <widget class="SynchronizedGraphicsView" name="gv_opacity">
        <property name="backgroundBrush">
         <brush brushstyle="Dense3Pattern">
          <color alpha="255">
@@ -433,6 +433,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SynchronizedGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>barvocuc.gui</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

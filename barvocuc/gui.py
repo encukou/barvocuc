@@ -34,6 +34,37 @@ def qpixmap_from_float_array(array):
     return pixmap
 
 
+class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
+    def wheelEvent(self, event):
+        for self in self.friends:
+            # Zoom Factor
+            zoomInFactor = 1.1
+            zoomOutFactor = 1 / zoomInFactor
+
+            # Set Anchors
+            self.setTransformationAnchor(QtWidgets.QGraphicsView.NoAnchor)
+            self.setResizeAnchor(QtWidgets.QGraphicsView.NoAnchor)
+
+            # Save the scene pos
+            oldPos = self.mapToScene(event.pos())
+
+            # Zoom
+            if event.angleDelta().y() > 0:
+                zoomFactor = zoomInFactor
+            else:
+                zoomFactor = zoomOutFactor
+            if zoomFactor > 8:
+                zoomFactor = 8
+            self.scale(zoomFactor, zoomFactor)
+
+            # Get the new position
+            newPos = self.mapToScene(event.pos())
+
+            # Move scene to old position
+            delta = newPos - oldPos
+            self.translate(delta.x(), delta.y())
+
+
 class Gui(object):
     def __init__(self):
         self.app = QtWidgets.QApplication([])
@@ -44,8 +75,11 @@ class Gui(object):
             uic.loadUi(f, win)
 
         self.scenes = {}
+        friends = []
         for name in VIEWS:
             view = win.findChild(QtWidgets.QGraphicsView, 'gv_' + name)
+            view.friends = friends
+            friends.append(view)
             self.scenes[name] = self.init_graphics_scene(view)
 
         self.load_preview(get_filename('media/default.png'))
@@ -70,8 +104,10 @@ class Gui(object):
         self.analyzer = analyzer = ImageAnalyzer(filename)
 
         for name in VIEWS:
+            view = win.findChild(QtWidgets.QGraphicsView, 'gv_' + name)
+
             pixmap = qpixmap_from_float_array(analyzer.arrays['img_' + name])
-            self.scenes[name].addPixmap(pixmap)
+            view.pixmap_item = self.scenes[name].addPixmap(pixmap)
 
 
 def main():
