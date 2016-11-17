@@ -50,6 +50,10 @@ class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
         self._bgbrush2 = QtGui.QBrush(QtGui.QColor(100, 100, 100),
                                       QtCore.Qt.Dense4Pattern)
 
+        self._in_sync = False
+        self.horizontalScrollBar().valueChanged.connect(self._sync_scrollbars)
+        self.verticalScrollBar().valueChanged.connect(self._sync_scrollbars)
+
     def wheelEvent(self, event):
         # Get the cursor's scene position -- this should not change
         old_pos = self.mapToScene(event.pos())
@@ -74,6 +78,35 @@ class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
         self.backgroundBrush().setTransform(QtGui.QTransform.fromTranslate(
             zoom,
             zoom))
+
+        self._sync_scrollbars()
+
+    def _sync_scrollbars(self,*a, **ka):
+        if self._in_sync:
+            return
+
+        scrollbar_h = self.horizontalScrollBar()
+        scrollbar_v = self.verticalScrollBar()
+
+        if scrollbar_h.maximum():
+            hpos = scrollbar_h.value() / scrollbar_h.maximum()
+        else:
+            hpos = 0
+        if scrollbar_v.maximum():
+            vpos = scrollbar_v.value() / scrollbar_v.maximum()
+        else:
+            vpos = 0
+        for friend in self.friends:
+            if friend == self:
+                continue
+            try:
+                friend._in_sync = True
+                hb = friend.horizontalScrollBar()
+                vb = friend.verticalScrollBar()
+                hb.setValue(hpos * hb.maximum())
+                vb.setValue(vpos * vb.maximum())
+            finally:
+                friend._in_sync = False
 
     def _zoom(self, zoom):
         [item] = self.scene().items()
