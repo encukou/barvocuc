@@ -83,24 +83,6 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QDockWidget" name="dockInput">
-   <property name="allowedAreas">
-    <set>Qt::BottomDockWidgetArea</set>
-   </property>
-   <property name="windowTitle">
-    <string>I&amp;nput Image</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>8</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_3">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="SynchronizedGraphicsView" name="gv_source"/>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QDockWidget" name="dockSettings">
    <property name="windowTitle">
     <string>Settin&amp;gs</string>
@@ -225,7 +207,25 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockColors">
+  <widget class="QDockWidget" name="dock_source">
+   <property name="allowedAreas">
+    <set>Qt::BottomDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>I&amp;nput Image</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="SynchronizedGraphicsView" name="gv_source"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dock_colors">
    <property name="features">
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
@@ -246,7 +246,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockEdges">
+  <widget class="QDockWidget" name="dock_sobel">
    <property name="allowedAreas">
     <set>Qt::BottomDockWidgetArea</set>
    </property>
@@ -264,7 +264,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockOpacity">
+  <widget class="QDockWidget" name="dock_opacity">
    <property name="allowedAreas">
     <set>Qt::BottomDockWidgetArea</set>
    </property>

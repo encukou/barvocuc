@@ -157,6 +157,8 @@ class Gui(object):
             friends.append(view)
             self.scenes[name] = self.init_graphics_scene(view)
 
+        self.populate_view_menu()
+
         self.load_preview(get_filename('media/default.png'))
 
         self.fill_translation_menu()
@@ -225,6 +227,14 @@ class Gui(object):
 
         if save_setting:
             QtCore.QSettings().setValue('barvocuc/lang', locale.bcp47Name())
+
+    def populate_view_menu(self):
+        menu = self.win.findChild(QtWidgets.QMenu, 'menuView')
+        for dock in self.win.findChildren(QtWidgets.QDockWidget):
+            menu.addAction(dock.toggleViewAction())
+        menu.addSeparator()
+        for toolbar in self.win.findChildren(QtWidgets.QToolBar):
+            menu.addAction(toolbar.toggleViewAction())
 
 
 def main():
