@@ -16,6 +16,9 @@ _weakdict = weakref.WeakKeyDictionary()
 def get_filename(name):
     return os.path.join(os.path.dirname(__file__), name)
 
+def listdir(path):
+    return os.listdir(path)
+
 
 def qpixmap_from_float_array(array):
     rgba = (array * 255).astype('uint8')
@@ -65,14 +68,31 @@ class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
             self.translate(delta.x(), delta.y())
 
 
+class BarvocucMainWindow(QtWidgets.QMainWindow):
+    def __init__(self, ui_form):
+        super().__init__()
+        ui_form.setupUi(self)
+        self._ui_form = ui_form
+
+    def changeEvent(self, event):
+        if event.type() == QtCore.QEvent.LanguageChange:
+            self._ui_form.retranslateUi(self)
+
+
 class Gui(object):
     def __init__(self):
         self.app = QtWidgets.QApplication([])
 
-        self.win = win = QtWidgets.QMainWindow()
+        QtCore.QCoreApplication.setOrganizationName("encukou");
+        QtCore.QCoreApplication.setOrganizationDomain("encukou.cz");
+        QtCore.QCoreApplication.setApplicationName("Barvocuc");
 
         with open(get_filename('ui/mainwindow.ui')) as f:
-            uic.loadUi(f, win)
+            ui_form_class, ui_base_class = uic.loadUiType(f)
+
+        ui_form = ui_form_class()
+
+        self.win = win = BarvocucMainWindow(ui_form)
 
         self.scenes = {}
         friends = []
@@ -83,6 +103,20 @@ class Gui(object):
             self.scenes[name] = self.init_graphics_scene(view)
 
         self.load_preview(get_filename('media/default.png'))
+
+        self.fill_translation_menu()
+
+        settings = QtCore.QSettings()
+
+        default_locale_name = QtCore.QLocale().bcp47Name()
+        locale_name = settings.value('barvocuc/lang', default_locale_name)
+        self.set_locale(QtCore.QLocale(locale_name), save_setting=False)
+
+    def retranslate(self):
+        self.translator = translator = QtCore.QTranslator()
+        translator.load(self.locale, 'barvocuc', '.',
+                        get_filename('translations'), ".qm")
+        ok = QtCore.QCoreApplication.installTranslator(translator)
 
     def run(self):
         self.win.show()
@@ -108,6 +142,34 @@ class Gui(object):
 
             pixmap = qpixmap_from_float_array(analyzer.arrays['img_' + name])
             view.pixmap_item = self.scenes[name].addPixmap(pixmap)
+
+    def fill_translation_menu(self):
+        menu = self.win.findChild(QtWidgets.QMenu, 'menuLanguage')
+        for filename in sorted(listdir(get_filename('translations/'))):
+            if filename.endswith('.qm'):
+                base, locale_name, ext = filename.split('.')
+                self.translator = translator = QtCore.QTranslator()
+                locale = QtCore.QLocale(locale_name)
+                translator.load(locale, 'barvocuc', '.',
+                                get_filename('translations'), ".qm")
+                translate = translator.translate
+                name = translate('gui', '<language name>')
+                action = menu.addAction(name)
+                action.triggered.connect(lambda *a, locale=locale:
+                                         self.set_locale(locale))
+                action.setData(locale)
+                action.setCheckable(True)
+
+    def set_locale(self, locale, *, save_setting=True):
+        self.locale = locale
+        self.retranslate()
+
+        menu = self.win.findChild(QtWidgets.QMenu, 'menuLanguage')
+        for item in menu.actions():
+            item.setChecked(item.data().bcp47Name() == locale.bcp47Name())
+
+        if save_setting:
+            QtCore.QSettings().setValue('barvocuc/lang', locale.bcp47Name())
 
 
 def main():
