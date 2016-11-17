@@ -96,20 +96,7 @@
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="SynchronizedGraphicsView" name="gv_source">
-       <property name="backgroundBrush">
-        <brush brushstyle="Dense3Pattern">
-         <color alpha="255">
-          <red>0</red>
-          <green>0</green>
-          <blue>0</blue>
-         </color>
-        </brush>
-       </property>
-       <property name="dragMode">
-        <enum>QGraphicsView::ScrollHandDrag</enum>
-       </property>
-      </widget>
+      <widget class="SynchronizedGraphicsView" name="gv_source"/>
      </item>
     </layout>
    </widget>
@@ -254,20 +241,7 @@
    <widget class="QWidget" name="dockWidgetContents_5">
     <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
-      <widget class="SynchronizedGraphicsView" name="gv_colors">
-       <property name="backgroundBrush">
-        <brush brushstyle="Dense3Pattern">
-         <color alpha="255">
-          <red>0</red>
-          <green>0</green>
-          <blue>0</blue>
-         </color>
-        </brush>
-       </property>
-       <property name="dragMode">
-        <enum>QGraphicsView::ScrollHandDrag</enum>
-       </property>
-      </widget>
+      <widget class="SynchronizedGraphicsView" name="gv_colors"/>
      </item>
     </layout>
    </widget>
@@ -285,20 +259,7 @@
    <widget class="QWidget" name="dockWidgetContents_6">
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
-      <widget class="SynchronizedGraphicsView" name="gv_sobel">
-       <property name="backgroundBrush">
-        <brush brushstyle="Dense3Pattern">
-         <color alpha="255">
-          <red>0</red>
-          <green>0</green>
-          <blue>0</blue>
-         </color>
-        </brush>
-       </property>
-       <property name="dragMode">
-        <enum>QGraphicsView::ScrollHandDrag</enum>
-       </property>
-      </widget>
+      <widget class="SynchronizedGraphicsView" name="gv_sobel"/>
      </item>
     </layout>
    </widget>
@@ -316,20 +277,7 @@
    <widget class="QWidget" name="dockWidgetContents_7">
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
-      <widget class="SynchronizedGraphicsView" name="gv_opacity">
-       <property name="backgroundBrush">
-        <brush brushstyle="Dense3Pattern">
-         <color alpha="255">
-          <red>0</red>
-          <green>0</green>
-          <blue>0</blue>
-         </color>
-        </brush>
-       </property>
-       <property name="dragMode">
-        <enum>QGraphicsView::ScrollHandDrag</enum>
-       </property>
-      </widget>
+      <widget class="SynchronizedGraphicsView" name="gv_opacity"/>
      </item>
     </layout>
    </widget>
