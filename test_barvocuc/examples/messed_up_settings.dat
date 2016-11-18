@@ -1,0 +1,84 @@
+{
+    "version": 2,
+    "thresholds": {
+        "color": [
+            13,
+            15,
+            42,
+            47,
+            88,
+            89,
+            176,
+            183,
+            269,
+            271,
+            314,
+            318,
+            347,
+            348
+        ],
+        "special": {
+            "white": 0.82,
+            "gray": 0.18,
+            "black": 0.23
+        }
+    },
+    "display_colors": {
+        "main": [
+            "#ffd7c0",
+            "#ffd0a0",
+            "#fff7c7",
+            "#c9ffc6",
+            "#cacdff",
+            "#ffb0f8",
+            "#ffcee4"
+        ],
+        "transition": [
+            "#cc0000",
+            "#ca6200",
+            "#c7c700",
+            "#00cccc",
+            "#0000ee",
+            "#d600d6",
+            "#bd005e"
+        ],
+        "special": [
+            "#949494",
+            "#2ec71c",
+            "#e8e8e8"
+        ]
+    },
+    "output": {
+        "csv_fields": [
+            "width",
+            "height",
+            "white%",
+            "black%",
+            "gray%",
+            "red%",
+            "orange%",
+            "yellow%",
+            "green%",
+            "blue%",
+            "purple%",
+            "pink%",
+            "avg_h",
+            "avg_s",
+            "avg_l",
+            "stddev_h",
+            "stddev_s",
+            "stddev_l",
+            "avg_sobel",
+            "opaque_pixels",
+            "opacity%"
+        ],
+        "images": [
+            "source",
+            "colors",
+            "sobel",
+            "opacity",
+            "montage"
+        ]
+    },
+    "lang": "en"
+}

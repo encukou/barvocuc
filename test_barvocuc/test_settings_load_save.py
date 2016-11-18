@@ -47,6 +47,7 @@ def assert_settings_equal(got, expected):
             expected_attr = getattr(expected, attr_name)
             if not isinstance(expected_attr, type(expected.load_from)):
                 got_attr = getattr(got, attr_name)
+                print(attr_name)
                 assert got_attr == expected_attr
 
 
@@ -156,3 +157,15 @@ def test_from_lang(settings, control):
 def test_from_bad_lang(settings, control):
     settings.from_dict({'lang': 'xq'})
     control.lang = 'en'
+
+def test_load_old():
+    with open(example_filename('old_settings.dat')) as f:
+        settings = Settings.load_from(f)
+    assert_settings_equal(settings, Settings())
+
+def test_load_messed_up_old():
+    with open(example_filename('messed_up_old_settings.dat')) as f:
+        settings = Settings.load_from(f)
+    with open(example_filename('messed_up_settings.dat')) as f:
+        control = Settings.load_from(f)
+    assert_settings_equal(settings, control)

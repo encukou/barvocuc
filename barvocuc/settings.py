@@ -173,7 +173,7 @@ class Settings:
         return result
 
     def from_dict(self, dct):
-        if dct.get('version', 2) != 2:
+        if dct.get('version', 2) > 2:
             raise ValueError('wrong data version')
 
         tr = dct.get('thresholds')
@@ -231,7 +231,48 @@ class Settings:
 
     @classmethod
     def load_from(cls, f):
-        dct = json.load(f)
+        contents = f.read()
+        try:
+            dct = json.loads(contents)
+        except json.JSONDecodeError as e:
+            try:
+                dct = cls.load_old_yaml(contents)
+            except Exception:
+                raise #e
         result = cls()
         result.from_dict(dct)
+        return result
+
+    @classmethod
+    def load_old_yaml(cls, string):
+        import yaml
+        def settings_constructor(loader, node):
+            return loader.construct_mapping(node)
+        def tuple_constructor(loader, node):
+            return loader.construct_sequence(node)
+        class Loader(yaml.SafeLoader):
+            pass
+        Loader.add_constructor('tag:yaml.org,2002:python/object:settings.Settings',
+                               settings_constructor)
+        Loader.add_constructor('tag:yaml.org,2002:python/tuple',
+                               tuple_constructor)
+        yaml_result = yaml.load(string, Loader=Loader)
+
+        result = dict(
+            version=1,
+            thresholds=dict(
+                color=yaml_result['thresholds'],
+                special={k: v/100
+                         for k, v
+                         in zip(('white', 'black', 'gray'),
+                                yaml_result['spc_thresholds'])},
+            ),
+            display_colors=dict(
+                main=[to_hex(t) for t in yaml_result['colors'][::2]],
+                transition=[to_hex(t) for t in yaml_result['colors'][1::2]],
+                special=[to_hex(yaml_result['spc_colors'][i]) for i in (0, 2, 1)],
+            ),
+        )
+        print(result['display_colors']['special'])
+
         return result
