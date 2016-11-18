@@ -30,7 +30,7 @@
        <bool>true</bool>
       </property>
       <attribute name="headerDefaultSectionSize">
-       <number>50</number>
+       <number>75</number>
       </attribute>
       <column>
        <property name="text">
@@ -311,6 +311,9 @@
   <action name="actionRemoveFile">
    <property name="text">
     <string>&amp;Remove image</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
    </property>
   </action>
   <action name="actionOpenDirectory">

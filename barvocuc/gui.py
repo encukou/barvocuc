@@ -563,6 +563,21 @@ class Gui(object):
         if path:
             self.add_files(generate_paths([path]))
 
+    @action_handler('actionRemoveFile')
+    def remove_file(self):
+        widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        for item in widget.selectedItems():
+            idx = widget.indexOfTopLevelItem(item)
+            widget.takeTopLevelItem(idx)
+        self.redisplay_filenames()
+
+    @action_handler('actionClearInput')
+    def remove_all(self):
+        widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        while widget.topLevelItemCount():
+            widget.takeTopLevelItem(0)
+
+
 def main():
     gui = Gui()
     return gui.run()
