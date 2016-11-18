@@ -194,6 +194,14 @@ class Gui(object):
         treewidget.header().resizeSection(0, 200)
         self.item_selection_changed()
 
+        column_names = [
+            FIELD_NAMES[self.settings.lang].get(n, n)
+            for n in ['filename'] + Settings().csv_output_fields + ['error']
+        ]
+        treewidget.setHeaderLabels(column_names)
+        treewidget.header().setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeToContents)
+
         self.populate_view_menu()
         self.populate_translation_menu()
         self.populate_settings_dock()
@@ -449,13 +457,6 @@ class Gui(object):
                      + self.settings.special_display_colors)
         for btn, color in zip(self.color_buttons, allcolors):
             self._set_button_color(btn, color)
-
-        column_names = [
-            FIELD_NAMES[self.settings.lang].get(n, n)
-            for n in ['filename'] + self.settings.csv_output_fields + ['error']
-        ]
-        treewidget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
-        treewidget.setHeaderLabels(column_names)
 
     def _lang_changed(self, lang):
         self.settings.lang = lang
