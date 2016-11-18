@@ -8,6 +8,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 from .analysis import ImageAnalyzer
 from .settings import COLOR_NAMES, SPECIAL_NAMES, FIELD_NAMES, Settings
+from .batch import generate_paths
 
 
 VIEWS = 'source', 'colors', 'sobel', 'opacity'
@@ -60,7 +61,6 @@ class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
         self.verticalScrollBar().valueChanged.connect(self._sync_scrollbars)
 
     def wheelEvent(self, event):
-        # Get the cursor's scene position -- this should not change
         old_pos = self.mapToScene(event.pos())
 
         zoom = old_zoom = self.pixmap_item.scale()
@@ -85,7 +85,7 @@ class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
 
         self._sync_scrollbars()
 
-    def _sync_scrollbars(self,*a, **ka):
+    def _sync_scrollbars(self, *a, **ka):
         if self._in_sync:
             return
 
@@ -133,6 +133,8 @@ class BarvocucMainWindow(QtWidgets.QMainWindow):
         ui_form.setupUi(self)
         self._ui_form = ui_form
 
+    lang_changed = QtCore.pyqtSignal(str)
+
     def changeEvent(self, event):
         if event.type() == QtCore.QEvent.LanguageChange:
             self._ui_form.retranslateUi(self)
@@ -140,6 +142,7 @@ class BarvocucMainWindow(QtWidgets.QMainWindow):
             for lang in self.locale.uiLanguages():
                 if lang in FIELD_NAMES:
                     names = FIELD_NAMES[lang]
+                    self.lang_changed.emit(lang)
                     break
             for label, combo_label, color_ident, next_color_ident in zip(
                     self.color_labels,
@@ -178,13 +181,15 @@ class Gui(object):
         self.scenes = {}
         friends = []
         for name in VIEWS:
-            view = win.findChild(QtWidgets.QGraphicsView, 'gv_' + name)
+            view = win.findChild(SynchronizedGraphicsView, 'gv_' + name)
             view.friends = friends
             friends.append(view)
             self.scenes[name] = self.init_graphics_scene(view)
 
-
-        self.load_preview(get_filename('media/default.png'))
+        treewidget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        treewidget.itemSelectionChanged.connect(self.item_selection_changed)
+        treewidget.header().resizeSection(0, 200)
+        self.item_selection_changed()
 
         self.populate_view_menu()
         self.populate_translation_menu()
@@ -196,6 +201,7 @@ class Gui(object):
         settings = QtCore.QSettings()
         self.sync_to_settings()
 
+        win.lang_changed.connect(self._lang_changed)
         default_locale_name = QtCore.QLocale().bcp47Name()
         locale_name = settings.value('barvocuc/lang', default_locale_name)
         self.set_locale(QtCore.QLocale(locale_name), save_setting=False)
@@ -262,7 +268,7 @@ class Gui(object):
                 zoom = 1
 
             view.pixmap_item = scene.addPixmap(pixmap)
-            view.pixmap_item.setScale(zoom)
+            view._zoom(zoom)
 
     def populate_translation_menu(self):
         menu = self.win.findChild(QtWidgets.QMenu, 'menuLanguage')
@@ -431,6 +437,17 @@ class Gui(object):
         for btn, color in zip(self.color_buttons, allcolors):
             self._set_button_color(btn, color)
 
+        column_names = [
+            FIELD_NAMES[self.settings.lang].get(n, n)
+            for n in ['filename'] + self.settings.csv_output_fields + ['error']
+        ]
+        treewidget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        treewidget.setHeaderLabels(column_names)
+
+    def _lang_changed(self, lang):
+        self.settings.lang = lang
+        self.sync_to_settings()
+
     def _set_button_color(self, btn, color):
         css_template = "QPushButton { background-color: #%02X%02X%02X}"
         btn.setStyleSheet(css_template % tuple(int(x*255) for x in color))
@@ -496,6 +513,55 @@ class Gui(object):
         self.sync_to_settings()
         self.update_preview()
 
+    @action_handler('actionOpenFile')
+    def open_file(self):
+        paths, foo = QtWidgets.QFileDialog.getOpenFileNames(
+                caption=translate('MainWindow', 'Add Image File'))
+        if paths:
+            self.add_files(paths)
+
+    def add_files(self, paths):
+        item = None
+        widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        for path in paths:
+            item = QtWidgets.QTreeWidgetItem()
+            item.setText(0, path)
+            item.setData(0, QtCore.Qt.UserRole, path)
+            widget.addTopLevelItem(item)
+        if item:
+            widget.setCurrentItem(item)
+
+    def item_selection_changed(self):
+        widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        path = None
+        for item in widget.selectedItems():
+            path = item.data(0, QtCore.Qt.UserRole)
+        if path is None:
+            self.load_preview(get_filename('media/default.png'))
+        else:
+            self.load_preview(path)
+        self.redisplay_filenames()
+
+    def redisplay_filenames(self):
+        widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        paths = []
+        for i in range(widget.topLevelItemCount()):
+            item = widget.topLevelItem(i)
+            path = item.data(0, QtCore.Qt.UserRole)
+            paths.append(os.path.dirname(path))
+        if paths:
+            prefix = os.path.commonpath(paths)
+            for i in range(widget.topLevelItemCount()):
+                item = widget.topLevelItem(i)
+                path = item.data(0, QtCore.Qt.UserRole)
+                item.setText(0, os.path.relpath(path, prefix))
+
+    @action_handler('actionOpenDirectory')
+    def open_file(self):
+        path = QtWidgets.QFileDialog.getExistingDirectory(
+                caption=translate('MainWindow', 'Add Image Directory'))
+        if path:
+            self.add_files(generate_paths([path]))
 
 def main():
     gui = Gui()

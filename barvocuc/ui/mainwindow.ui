@@ -22,7 +22,22 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QTableWidget" name="tblFiles"/>
+     <widget class="QTreeWidget" name="file_list">
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+      <property name="allColumnsShowFocus">
+       <bool>true</bool>
+      </property>
+      <attribute name="headerDefaultSectionSize">
+       <number>50</number>
+      </attribute>
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -287,7 +302,7 @@
   </widget>
   <action name="actionOpenFile">
    <property name="text">
-    <string>&amp;Add file...</string>
+    <string>&amp;Add image...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -295,12 +310,15 @@
   </action>
   <action name="actionRemoveFile">
    <property name="text">
-    <string>&amp;Remove file</string>
+    <string>&amp;Remove image</string>
    </property>
   </action>
   <action name="actionOpenDirectory">
    <property name="text">
     <string>Add &amp;directory...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
    </property>
   </action>
   <action name="actionQuit">
@@ -352,7 +370,7 @@
   </action>
   <action name="actionClearInput">
    <property name="text">
-    <string>Remove all &amp;files</string>
+    <string>Remove all &amp;images</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Del</string>
