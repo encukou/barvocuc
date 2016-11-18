@@ -771,6 +771,11 @@ class Gui(object):
 
             dialog = self.about_dialog = AboutDialog(form())
 
+            with open(get_filename('COPYING.html')) as f:
+                license_html = f.read()
+            widget = dialog.findChild(QtWidgets.QTextBrowser, 'textLicense')
+            widget.setHtml(license_html)
+
         widget = dialog.findChild(QtWidgets.QTabWidget, 'tabWidget')
         widget.setCurrentIndex(pageno)
 
