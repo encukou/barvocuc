@@ -2,6 +2,7 @@ import os
 import gc
 import weakref
 import math
+import colorsys
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
@@ -17,6 +18,7 @@ MIN_ZOOM = 1/32
 
 _weakdict = weakref.WeakKeyDictionary()
 
+COLOR_SPINBOXES = False  # TODO: Turn on?
 
 def get_filename(name):
     return os.path.join(os.path.dirname(__file__), name)
@@ -349,12 +351,21 @@ class Gui(object):
         self.update_preview()
 
     def update_threshold_minmax(self, n):
-        value = self.color_sbinboxes[n].value()
+        box = self.color_sbinboxes[n]
+        value = box.value()
 
         if n + 1 < len(self.settings.color_thresholds):
             self.color_sbinboxes[n + 1].setMinimum(value)
         if n - 1 >= 0:
             self.color_sbinboxes[n - 1].setMaximum(value)
+
+        if COLOR_SPINBOXES:
+            color = colorsys.hls_to_rgb(value/360, 0.5, 1)
+            colorhex = '#%02X%02X%02X' % tuple(int(x*255) for x in color)
+            css_template = """
+                QSpinBox { color: %(h)s; }
+            """
+            box.setStyleSheet(css_template % {'h': colorhex})
 
     def special_changed(self, value, name):
         self.settings.special_thresholds[name] = value / 100
