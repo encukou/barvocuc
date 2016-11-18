@@ -36,7 +36,9 @@ def generate_csv(csv_file, paths, *, settings=None, outdir=None):
 
     output_fields = settings.csv_output_fields
 
-    writers = [csv.writer(csv_file, lineterminator='\n')]
+    writers = []
+    if csv_file:
+        writers.append(csv.writer(csv_file, lineterminator='\n'))
     if outdir:
         outfile = open(os.path.join(outdir, 'out.csv'), 'w')
         writers.append(csv.writer(outfile, lineterminator='\n'))

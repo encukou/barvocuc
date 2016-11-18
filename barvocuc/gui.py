@@ -5,12 +5,14 @@ import math
 import colorsys
 import itertools
 import math
+import io
+import csv
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 from .analysis import ImageAnalyzer
 from .settings import COLOR_NAMES, SPECIAL_NAMES, FIELD_NAMES, Settings
-from .batch import generate_paths
+from .batch import generate_paths, generate_csv
 
 
 VIEWS = 'source', 'colors', 'sobel', 'opacity'
@@ -150,6 +152,7 @@ class BarvocucMainWindow(QtWidgets.QMainWindow):
         self._ui_form = ui_form
 
     lang_changed = QtCore.pyqtSignal(str)
+    enable_csv_export = QtCore.pyqtSignal(bool)
 
     def changeEvent(self, event):
         if event.type() == QtCore.QEvent.LanguageChange:
@@ -573,6 +576,7 @@ class Gui(object):
         if item:
             widget.setCurrentItem(item)
             self.analysis_timer.start()
+            self.win.enable_csv_export.emit(False)
 
     def item_selection_changed(self):
         widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
@@ -613,20 +617,24 @@ class Gui(object):
             idx = widget.indexOfTopLevelItem(item)
             widget.takeTopLevelItem(idx)
         self.redisplay_filenames()
+        self.reset_analysis()
 
     @action_handler('actionClearInput')
     def remove_all(self):
         widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
         while widget.topLevelItemCount():
             widget.takeTopLevelItem(0)
+        self.reset_analysis()
 
     def reset_analysis(self):
+        self.win.enable_csv_export.emit(False)
         widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
         for i in range(widget.topLevelItemCount()):
             item = widget.topLevelItem(i)
             for i in range(1, widget.columnCount()):
                 item.setText(i, '')
             item.setData(0, DONE_ROLE, False)
+            item.setData(0, DATA_ROLE, None)
         for item in widget.selectedItems():
             idx = widget.indexOfTopLevelItem(item)
             self._analysis_position = idx
@@ -646,22 +654,90 @@ class Gui(object):
             item = widget.topLevelItem(i)
             if not item.data(0, DONE_ROLE):
                 path = item.data(0, PATH_ROLE)
+                filename = item.text(0)
+                results = {'filename': filename, 'error': ''}
                 try:
                     analyzer = ImageAnalyzer(path, settings=self.settings)
                     fields = Settings().csv_output_fields
                     for i, name in enumerate(fields, start=1):
                         result = analyzer.results[name]
+                        results[name] = result
                         item.setData(i, DATA_ROLE, result)
                         if isinstance(result, float):
                             result = round(result, 2)
                         item.setText(i, str(result))
                 except Exception as e:
-                    item.setText(self.error_column_no, format_err(e))
+                    msg = format_err(e)
+                    results['error'] = msg
+                    item.setText(self.error_column_no, msg)
                 item.setData(0, DONE_ROLE, True)
-                break
+                item.setData(0, DATA_ROLE, results)
+                return False
         else:
             self.analysis_timer.stop()
+            if N:
+                self.win.enable_csv_export.emit(True)
+            return True
 
+    def get_csv(self):
+        widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        buffer = io.StringIO()
+        columns = ('filename', *self.settings.csv_output_fields, 'error')
+        lang = self.settings.lang
+        writer = csv.DictWriter(buffer, columns, extrasaction='ignore',
+                                lineterminator='\n')
+        writer.writerow(FIELD_NAMES[lang])
+        for i in range(widget.topLevelItemCount()):
+            writer.writerow(widget.topLevelItem(i).data(0, DATA_ROLE))
+
+        return buffer.getvalue()
+
+    @action_handler('actionCopyCSV')
+    def copy_csv(self):
+        try:
+            data = self.get_csv()
+
+            clipboard = self.app.clipboard()
+            clipboard.setText(data)
+        except Exception as e:
+            self.show_error_box(
+                translate('MainWindow', 'Could not copy CSV'), e)
+
+    @action_handler('actionSaveCSV')
+    def copy_csv(self):
+        try:
+            data = self.get_csv()
+
+            path, foo = QtWidgets.QFileDialog.getSaveFileName(
+                    caption=translate('MainWindow', 'Save CSV'),
+                    filter=translate('MainWindow', 'CSV files (*.csv)'),
+                    )
+            if path:
+                with open(path, 'w') as f:
+                    f.write(data)
+        except Exception as e:
+            self.show_error_box(
+                translate('MainWindow', 'Could not save CSV'), e)
+
+    @action_handler('actionSaveToDir')
+    def save_to_dir(self):
+        widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        paths = []
+        for i in range(widget.topLevelItemCount()):
+            paths.append(widget.topLevelItem(i).data(0, PATH_ROLE))
+
+        if not paths:
+            return
+
+        try:
+            path = QtWidgets.QFileDialog.getExistingDirectory(
+                    caption=translate('MainWindow', 'Save to directory'),
+                    )
+            if path:
+                generate_csv(None, paths, settings=self.settings, outdir=path)
+        except Exception as e:
+            self.show_error_box(
+                translate('MainWindow', 'Could not save CSV'), e)
 
 def main():
     gui = Gui()
