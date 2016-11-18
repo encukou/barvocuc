@@ -128,7 +128,7 @@ class ImageAnalyzer:
         sob = numpy.hypot(sx, sy)
         return sx, sy, sob
 
-    @_make_arrays('white', 'gray', 'black', 'colorful')
+    @_make_arrays('white', 'gray', 'black', 'colorful', 'opacity')
     def make_special_masks(self):
         """Make Boolean masks for "special" colors"""
         lum = self.arrays['l']
@@ -138,9 +138,11 @@ class ImageAnalyzer:
         white = and_(lum > thresholds['white'], a)
         black = and_(lum < thresholds['black'], a)
         gray = and_(and_(not_(or_(white, black)), sat < thresholds['gray']), a)
-        # The other pixels meaningful hue
+        # The other pixels have meaningful hue
         colorful = not_(or_(or_(white, black), gray))
-        return white, gray, black, colorful
+
+        opacity = a
+        return white, gray, black, colorful, opacity
 
     @_make_arrays(*COLOR_NAMES)
     def make_color_masks(self):
@@ -179,22 +181,23 @@ class ImageAnalyzer:
     def special_masks(self):
         return tuple(self.arrays[n] for n in SPECIAL_NAMES)
 
-    @_make_results('opaque_pixels', 'opacity')
+    @_make_results('opaque_pixels', 'opacity', 'opacity%')
     def make_opacity_results(self):
         a = self.arrays['a']
         num_opaque_pixels = numpy.sum(a)
         opacity = num_opaque_pixels / (a.shape[0] * a.shape[1])
-        return num_opaque_pixels, opacity
+        return num_opaque_pixels, opacity, opacity * 100
 
     for name in COLOR_NAMES + SPECIAL_NAMES:
 
-        @_make_results(name, name + '%')
-        def make_color_ratios(self, _name=name):
-            a = self.arrays['a']
-            opx = self.results['opaque_pixels']
-            color = self.arrays[_name]
-            result = numpy.sum(color * a) / opx
-            return result, result * 100
+        if name != 'opacity':
+            @_make_results(name, name + '%')
+            def make_color_ratios(self, _name=name):
+                a = self.arrays['a']
+                opx = self.results['opaque_pixels']
+                color = self.arrays[_name]
+                result = numpy.sum(color * a) / opx
+                return result, result * 100
 
     for name in 'r', 'g', 'b', 's', 'l', 'sobel', 'sobel_x', 'sobel_y':
 

@@ -102,6 +102,8 @@ def test_csv_results(analysis):
         'stddev_s': 0.34165645620949558,
         'stddev_l': 0.24915639167285492,
         'avg_sobel': 0.29684081705986493,
+        'opacity%': 99.15628756009616,
+        'opaque_pixels': 82498.03125,
     }
 
 

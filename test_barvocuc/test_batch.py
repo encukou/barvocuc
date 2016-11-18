@@ -9,9 +9,13 @@ from barvocuc.settings import Settings
 
 basedir = os.path.dirname(__file__)
 
+def example_filename(name):
+    return os.path.join(basedir, 'examples', name)
+
 @pytest.mark.parametrize('lang', ['cs', 'en'])
 def test_gen_csv_cs(lang):
-    settings = Settings()
+    with open(example_filename('test_settings.dat')) as f:
+        settings = Settings.load_from(f)
     settings.lang = lang
 
     with io.StringIO() as f:
@@ -41,7 +45,8 @@ def assert_dirs_same(adir, bdir):
 
 
 def test_gen_dir(tmpdir):
-    settings = Settings()
+    with open(example_filename('test_settings.dat')) as f:
+        settings = Settings.load_from(f)
 
     with io.StringIO() as f:
         generate_csv(f, [basedir], settings=settings, outdir=str(tmpdir))

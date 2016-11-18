@@ -2,7 +2,7 @@ import json
 import collections
 
 COLOR_NAMES = 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'
-SPECIAL_NAMES = 'white', 'gray', 'black', 'colorful'
+SPECIAL_NAMES = 'white', 'gray', 'black', 'colorful', 'opacity'
 
 IMAGE_NAMES = 'source', 'colors', 'sobel', 'opacity', 'montage'
 
@@ -28,6 +28,8 @@ FIELD_NAMES = {
         'stddev_s': 'Stddev. S',
         'stddev_l': 'Stddev. L',
         'avg_sobel': 'Avg. Sobel',
+        'opacity': 'Opacity',
+        'opaque_pixels': 'Opaque Pixels',
         'error': 'Error',
     },
     'cs': {
@@ -51,6 +53,8 @@ FIELD_NAMES = {
         'stddev_s': 'Směr. odch. S',
         'stddev_l': 'Směr. odch. L',
         'avg_sobel': 'Hrany',
+        'opacity': 'Neprůhlednost',
+        'opaque_pixels': 'Neprůhledných pixelů',
         'error': 'Chyba programu',
     },
 }
@@ -103,7 +107,7 @@ class Settings:
             'white%', 'black%', 'gray%',
             'red%', 'orange%', 'yellow%', 'green%', 'blue%', 'purple%', 'pink%',
             'avg_h', 'avg_s', 'avg_l', 'stddev_h', 'stddev_s', 'stddev_l',
-            'avg_sobel',
+            'avg_sobel', 'opaque_pixels', 'opacity%',
         ]
 
         self.lang = 'en'
