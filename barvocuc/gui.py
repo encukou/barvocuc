@@ -3,6 +3,8 @@ import gc
 import weakref
 import math
 import colorsys
+import itertools
+import math
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
@@ -22,6 +24,10 @@ _weakdict = weakref.WeakKeyDictionary()
 COLOR_SPINBOXES = False  # TODO: Turn on?
 
 translate = QtCore.QCoreApplication.translate
+
+PATH_ROLE = QtCore.Qt.UserRole
+DONE_ROLE = QtCore.Qt.UserRole + 1
+DATA_ROLE = QtCore.Qt.UserRole + 2
 
 def get_filename(name):
     return os.path.join(os.path.dirname(__file__), name)
@@ -45,6 +51,10 @@ def qpixmap_from_float_array(array):
     gc.collect()
 
     return pixmap
+
+
+def format_err(err):
+    return '{}: {}'.format(type(err).__name__, err)
 
 
 class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
@@ -181,6 +191,12 @@ class Gui(object):
 
         self.win = win = BarvocucMainWindow(ui_form)
 
+        self.analysis_timer = QtCore.QTimer()
+        self.analysis_timer.setSingleShot(False)
+        self.analysis_timer.setInterval(100)
+        self.analysis_timer.timeout.connect(self.do_analysis)
+        self._analysis_position = 0
+
         self.scenes = {}
         friends = []
         for name in VIEWS:
@@ -201,6 +217,7 @@ class Gui(object):
         treewidget.setHeaderLabels(column_names)
         treewidget.header().setSectionResizeMode(
             QtWidgets.QHeaderView.ResizeToContents)
+        self.error_column_no = len(column_names) - 1
 
         self.populate_view_menu()
         self.populate_translation_menu()
@@ -253,7 +270,7 @@ class Gui(object):
             self.analyzer = ImageAnalyzer(filename, settings=self.settings)
         except Exception as e:
             self.analyzer = None
-            msg = '{e.__class__.__name__}: {e}'.format(e=e)
+            msg = format_err(e)
         else:
             msg = '{a.width}×{a.height}px - {name}'.format(a=self.analyzer,
                                                            name=filename)
@@ -262,7 +279,7 @@ class Gui(object):
 
     def update_preview(self, *, settings_reset=True):
         self.need_preview_update = True
-        if settings_reset:
+        if settings_reset and self.analyzer:
             self.analyzer = self.analyzer.clone(settings=self.settings)
         QtCore.QTimer.singleShot(0, self._update_preview)
 
@@ -388,6 +405,7 @@ class Gui(object):
         self.settings.color_thresholds[n] = value
         self.update_threshold_minmax(n)
         self.update_preview()
+        self.reset_analysis()
 
     def update_threshold_minmax(self, n):
         box = self.color_sbinboxes[n]
@@ -410,6 +428,7 @@ class Gui(object):
         self.settings.special_thresholds[name] = value / 100
         self.update_special_minmax(name)
         self.update_preview()
+        self.reset_analysis()
 
     def update_special_minmax(self, name):
         value = self.special_sbinboxes[name].value()
@@ -458,6 +477,8 @@ class Gui(object):
         for btn, color in zip(self.color_buttons, allcolors):
             self._set_button_color(btn, color)
 
+        self.reset_analysis()
+
     def _lang_changed(self, lang):
         self.settings.lang = lang
         self.sync_to_settings()
@@ -496,7 +517,7 @@ class Gui(object):
     def show_error_box(self, msg, e):
         QtWidgets.QMessageBox.critical(
             self.win, msg,
-            '{msg}.\n\n{e.__class__.__name__}: {e}'.format(msg=msg, e=e),
+            '{msg}.\n\n{e}'.format(msg=msg, e=format_err(e)),
             )
 
     @action_handler('actionSaveSettings')
@@ -540,17 +561,19 @@ class Gui(object):
         for path in paths:
             item = QtWidgets.QTreeWidgetItem()
             item.setText(0, path)
-            item.setData(0, QtCore.Qt.UserRole, path)
+            item.setData(0, PATH_ROLE, path)
+            item.setData(0, DONE_ROLE, False)
             item.setData(0, QtCore.Qt.ToolTipRole, path)
             widget.addTopLevelItem(item)
         if item:
             widget.setCurrentItem(item)
+            self.analysis_timer.start()
 
     def item_selection_changed(self):
         widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
         path = None
         for item in widget.selectedItems():
-            path = item.data(0, QtCore.Qt.UserRole)
+            path = item.data(0, PATH_ROLE)
         if path is None:
             self.load_preview(get_filename('media/default.png'))
         else:
@@ -562,13 +585,13 @@ class Gui(object):
         paths = []
         for i in range(widget.topLevelItemCount()):
             item = widget.topLevelItem(i)
-            path = item.data(0, QtCore.Qt.UserRole)
+            path = item.data(0, PATH_ROLE)
             paths.append(os.path.dirname(path))
         if paths:
             prefix = os.path.commonpath(paths)
             for i in range(widget.topLevelItemCount()):
                 item = widget.topLevelItem(i)
-                path = item.data(0, QtCore.Qt.UserRole)
+                path = item.data(0, PATH_ROLE)
                 item.setText(0, os.path.relpath(path, prefix))
 
     @action_handler('actionOpenDirectory')
@@ -591,6 +614,46 @@ class Gui(object):
         widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
         while widget.topLevelItemCount():
             widget.takeTopLevelItem(0)
+
+    def reset_analysis(self):
+        widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        for i in range(widget.topLevelItemCount()):
+            item = widget.topLevelItem(i)
+            for i in range(1, widget.columnCount()):
+                item.setText(i, '')
+            item.setData(0, DONE_ROLE, False)
+        for item in widget.selectedItems():
+            idx = widget.indexOfTopLevelItem(item)
+            self._analysis_position = idx
+            break
+        self.analysis_timer.start()
+
+    def do_analysis(self):
+        widget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        N = widget.topLevelItemCount()
+        pos = self._analysis_position
+        if N:
+            pos %= N
+        self._analysis_position += 1
+        for i in itertools.chain(range(pos, N), range(pos)):
+            item = widget.topLevelItem(i)
+            if not item.data(0, DONE_ROLE):
+                path = item.data(0, PATH_ROLE)
+                try:
+                    analyzer = ImageAnalyzer(path, settings=self.settings)
+                    fields = Settings().csv_output_fields
+                    for i, name in enumerate(fields, start=1):
+                        result = analyzer.results[name]
+                        item.setData(i, DATA_ROLE, result)
+                        if isinstance(result, float):
+                            result = round(result, 2)
+                        item.setText(i, str(result))
+                except Exception as e:
+                    item.setText(self.error_column_no, format_err(e))
+                item.setData(0, DONE_ROLE, True)
+                break
+        else:
+            self.analysis_timer.stop()
 
 
 def main():
