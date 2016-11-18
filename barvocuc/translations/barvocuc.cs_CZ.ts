@@ -28,9 +28,22 @@
         <translation>Dokumentace</translation>
     </message>
     <message>
-        <location filename="about.ui" line="128"/>
+        <location filename="about.ui" line="136"/>
         <source>License</source>
         <translation>Licence</translation>
+    </message>
+    <message>
+        <location filename="about.ui" line="124"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;No such thing yet.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Nic takového zatím neexistuje.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message encoding="UTF-8">
         <location filename="about.ui" line="84"/>
@@ -226,22 +239,22 @@
         <translation>Obnovit výchozí nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="533"/>
+        <location filename="gui.py" line="544"/>
         <source>Save Settings</source>
         <translation>Uložit nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="546"/>
+        <location filename="gui.py" line="557"/>
         <source>Load Settings</source>
         <translation>Načíst nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="541"/>
+        <location filename="gui.py" line="552"/>
         <source>Could not save settings</source>
         <translation>Nepodařilo se uložit nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="554"/>
+        <location filename="gui.py" line="565"/>
         <source>Could not load settings</source>
         <translation>Nepodařilo se načíst nastavení</translation>
     </message>
@@ -266,12 +279,12 @@
         <translation>Odstranit &amp;všechny obrázky</translation>
     </message>
     <message>
-        <location filename="gui.py" line="561"/>
+        <location filename="gui.py" line="572"/>
         <source>Add Image File</source>
         <translation>Přidat soubor s obrázkem</translation>
     </message>
     <message>
-        <location filename="gui.py" line="608"/>
+        <location filename="gui.py" line="619"/>
         <source>Add Image Directory</source>
         <translation>Přidat adresář obrázků</translation>
     </message>
@@ -281,27 +294,27 @@
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="gui.py" line="703"/>
+        <location filename="gui.py" line="714"/>
         <source>Could not copy CSV</source>
         <translation>Nepodařilo se zkopírovat CSV data</translation>
     </message>
     <message>
-        <location filename="gui.py" line="711"/>
+        <location filename="gui.py" line="722"/>
         <source>Save CSV</source>
         <translation>Uložit CSV</translation>
     </message>
     <message>
-        <location filename="gui.py" line="711"/>
+        <location filename="gui.py" line="722"/>
         <source>CSV files (*.csv)</source>
         <translation>Soubory CSV</translation>
     </message>
     <message>
-        <location filename="gui.py" line="739"/>
+        <location filename="gui.py" line="750"/>
         <source>Could not save CSV</source>
         <translation>Nepodařilo se uložit CSV</translation>
     </message>
     <message>
-        <location filename="gui.py" line="733"/>
+        <location filename="gui.py" line="744"/>
         <source>Save to directory</source>
         <translation>Uložit do adresáře</translation>
     </message>
@@ -309,7 +322,7 @@
 <context>
     <name>gui</name>
     <message>
-        <location filename="gui.py" line="323"/>
+        <location filename="gui.py" line="334"/>
         <source>&lt;language name&gt;</source>
         <translation>Čeština</translation>
     </message>
