@@ -92,8 +92,11 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
     <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="rightMargin">
+      <number>9</number>
+     </property>
      <item>
-      <layout class="QGridLayout" name="layoutSettings" columnstretch="0,0,0,0,0,0,0,0,0,0">
+      <layout class="QGridLayout" name="layoutSettings" columnstretch="0,0,0,0,0,0,0">
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
@@ -101,35 +104,21 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="4">
+       <item row="0" column="3">
         <widget class="QLabel" name="label_6">
          <property name="text">
           <string>To</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="8">
+       <item row="0" column="5">
         <widget class="QLabel" name="label_8">
          <property name="text">
           <string>Combination</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="7">
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="5">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="9">
+       <item row="0" column="6">
         <widget class="QLabel" name="label_9">
          <property name="text">
           <string>Preview</string>
@@ -143,21 +132,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="7">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="8" colspan="2">
+       <item row="1" column="5" colspan="2">
         <widget class="Line" name="line_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -168,6 +143,13 @@
         <widget class="QLabel" name="label_7">
          <property name="text">
           <string>Preview</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="4">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>

@@ -6,6 +6,7 @@ import math
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 from .analysis import ImageAnalyzer
+from .settings import COLOR_NAMES, SPECIAL_NAMES, FIELD_NAMES, Settings
 
 
 VIEWS = 'source', 'colors', 'sobel', 'opacity'
@@ -132,11 +133,33 @@ class BarvocucMainWindow(QtWidgets.QMainWindow):
     def changeEvent(self, event):
         if event.type() == QtCore.QEvent.LanguageChange:
             self._ui_form.retranslateUi(self)
+            names = {}
+            for lang in self.locale.uiLanguages():
+                if lang in FIELD_NAMES:
+                    names = FIELD_NAMES[lang]
+                    break
+            for label, combo_label, color_ident, next_color_ident in zip(
+                    self.color_labels,
+                    self.combo_labels,
+                    COLOR_NAMES,
+                    COLOR_NAMES[1:]+COLOR_NAMES[:1]):
+                color_name = names.get(color_ident, color_ident)
+                label_text = '{}:'.format(color_name)
+                label.setText(label_text)
+                next_color_name = names.get(next_color_ident, next_color_ident)
+                label_text = '{} + {}:'.format(color_name, next_color_name)
+                combo_label.setText(label_text)
+            for label, color_ident in zip(self.special_labels, SPECIAL_NAMES):
+                color_name = names.get(color_ident, color_ident)
+                label_text = '{}:'.format(color_name)
+                label.setText(label_text)
 
 
 class Gui(object):
     def __init__(self):
         self.app = QtWidgets.QApplication([])
+
+        self.settings = Settings()
 
         QtCore.QCoreApplication.setOrganizationName("encukou");
         QtCore.QCoreApplication.setOrganizationDomain("encukou.cz");
@@ -157,17 +180,19 @@ class Gui(object):
             friends.append(view)
             self.scenes[name] = self.init_graphics_scene(view)
 
-        self.populate_view_menu()
 
         self.load_preview(get_filename('media/default.png'))
 
-        self.fill_translation_menu()
+        self.populate_view_menu()
+        self.populate_translation_menu()
+        self.populate_settings_dock()
 
         settings = QtCore.QSettings()
 
         default_locale_name = QtCore.QLocale().bcp47Name()
         locale_name = settings.value('barvocuc/lang', default_locale_name)
         self.set_locale(QtCore.QLocale(locale_name), save_setting=False)
+
 
     def retranslate(self):
         self.translator = translator = QtCore.QTranslator()
@@ -192,7 +217,8 @@ class Gui(object):
     def load_preview(self, filename):
         win = self.win
 
-        self.analyzer = analyzer = ImageAnalyzer(filename)
+        self.analyzer = analyzer = ImageAnalyzer(filename,
+                                                 settings=self.settings)
 
         for name in VIEWS:
             view = win.findChild(QtWidgets.QGraphicsView, 'gv_' + name)
@@ -200,7 +226,7 @@ class Gui(object):
             pixmap = qpixmap_from_float_array(analyzer.arrays['img_' + name])
             view.pixmap_item = self.scenes[name].addPixmap(pixmap)
 
-    def fill_translation_menu(self):
+    def populate_translation_menu(self):
         menu = self.win.findChild(QtWidgets.QMenu, 'menuLanguage')
         for filename in sorted(listdir(get_filename('translations/'))):
             if filename.endswith('.qm'):
@@ -219,6 +245,7 @@ class Gui(object):
 
     def set_locale(self, locale, *, save_setting=True):
         self.locale = locale
+        self.win.locale = locale
         self.retranslate()
 
         menu = self.win.findChild(QtWidgets.QMenu, 'menuLanguage')
@@ -235,6 +262,69 @@ class Gui(object):
         menu.addSeparator()
         for toolbar in self.win.findChildren(QtWidgets.QToolBar):
             menu.addAction(toolbar.toggleViewAction())
+
+    def populate_settings_dock(self):
+        layout = self.win.findChild(QtWidgets.QGridLayout, 'layoutSettings')
+        header_rows = layout.rowCount()
+        self.win.color_labels = []
+        self.win.combo_labels = []
+        self.win.special_labels = []
+
+        def _add_label_and_color_picker(row, col, text, color, label_list):
+            label = QtWidgets.QLabel(text)
+            layout.addWidget(label, row+header_rows, col, QtCore.Qt.AlignRight)
+            label_list.append(label)
+
+            btn = QtWidgets.QPushButton()
+            css_template = "QPushButton { background-color: #%02X%02X%02X}"
+            btn.setStyleSheet(css_template % tuple(int(x*255) for x in color))
+            layout.addWidget(btn, row+header_rows, col+1)
+
+        colorname_iter = zip(COLOR_NAMES, COLOR_NAMES[1:] + COLOR_NAMES[:1],
+                             self.settings.main_display_colors,
+                             self.settings.transition_display_colors)
+        for i, (color_name, next_color_name, color, t_color
+                    ) in enumerate(colorname_iter):
+            _add_label_and_color_picker(i, 0, color_name, color,
+                                        self.win.color_labels)
+
+            box = QtWidgets.QSpinBox()
+            box.setSuffix('°')
+            box.setMaximum(360)
+            box.setValue(self.settings.color_thresholds[i*2-2])
+            layout.addWidget(box, i+header_rows, 2)
+            box.valueChanged.connect(lambda v, n=i*2-2:
+                                         self.threshold_changed(v, n))
+
+            box = QtWidgets.QSpinBox()
+            box.setSuffix('°')
+            box.setMaximum(360)
+            l = len(self.settings.color_thresholds)
+            box.setValue(self.settings.color_thresholds[(i*2+1) % l])
+            layout.addWidget(box, i+header_rows, 3)
+            box.valueChanged.connect(lambda v, n=i*2+1:
+                                         self.threshold_changed(v, n))
+
+            label_text = '{}+{}:'.format(color_name, next_color_name)
+            _add_label_and_color_picker(i, 5, label_text, t_color,
+                                        self.win.combo_labels)
+
+        ziter = zip(SPECIAL_NAMES, self.settings.special_display_colors)
+        for i, (color_name, color) in enumerate(ziter):
+            _add_label_and_color_picker(i+len(COLOR_NAMES), 0,
+                                        color_name, color,
+                                        self.win.special_labels)
+
+            box = QtWidgets.QSpinBox()
+            box.setSuffix('%')
+            box.setMinimum(0)
+            box.setMaximum(100)
+            col = 3 if i < 2 else 2
+            layout.addWidget(box, i+len(COLOR_NAMES)+header_rows, col)
+
+    def threshold_changed(self, value, n):
+        self.settings.color_thresholds[n] = value
+        self.load_preview(get_filename('media/default.png'))
 
 
 def main():
