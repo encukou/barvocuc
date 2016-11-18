@@ -145,18 +145,28 @@ class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
         painter.fillRect(0, 0, self.width(), self.height(), self._bgbrush2)
 
 
-class BarvocucMainWindow(QtWidgets.QMainWindow):
+class TranslatableWindow:
     def __init__(self, ui_form):
         super().__init__()
         ui_form.setupUi(self)
         self._ui_form = ui_form
 
+    def changeEvent(self, event):
+        if event.type() == QtCore.QEvent.LanguageChange:
+            self._ui_form.retranslateUi(self)
+
+
+class AboutDialog(TranslatableWindow, QtWidgets.QDialog):
+    pass
+
+
+class BarvocucMainWindow(TranslatableWindow, QtWidgets.QMainWindow):
     lang_changed = QtCore.pyqtSignal(str)
     enable_csv_export = QtCore.pyqtSignal(bool)
 
     def changeEvent(self, event):
+        super().changeEvent(event)
         if event.type() == QtCore.QEvent.LanguageChange:
-            self._ui_form.retranslateUi(self)
             names = {}
             for lang in self.locale.uiLanguages():
                 if lang in FIELD_NAMES:
@@ -184,6 +194,7 @@ class Gui(object):
     def __init__(self):
         self.app = QtWidgets.QApplication([])
 
+        self.about_dialog = None
         self.settings = Settings()
 
         QtCore.QCoreApplication.setOrganizationName("encukou");
@@ -738,6 +749,34 @@ class Gui(object):
         except Exception as e:
             self.show_error_box(
                 translate('MainWindow', 'Could not save CSV'), e)
+
+    @action_handler('actionAbout')
+    def about(self):
+        return self.show_about(0)
+
+    @action_handler('actionOpenDocs')
+    def about(self):
+        return self.show_about(1)
+
+    @action_handler('actionOpenLicence')
+    def about(self):
+        return self.show_about(2)
+
+    def show_about(self, pageno):
+        if self.about_dialog:
+            dialog = self.about_dialog
+        else:
+            with open(get_filename('ui/about.ui')) as f:
+                form, cls = uic.loadUiType(f)
+
+            dialog = self.about_dialog = AboutDialog(form())
+
+        widget = dialog.findChild(QtWidgets.QTabWidget, 'tabWidget')
+        widget.setCurrentIndex(pageno)
+
+        dialog.show()
+        dialog.raise_()
+
 
 def main():
     gui = Gui()
