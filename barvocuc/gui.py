@@ -59,8 +59,7 @@ class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
         # Get the cursor's scene position -- this should not change
         old_pos = self.mapToScene(event.pos())
 
-        [item] = self.scene().items()
-        zoom = old_zoom = item.scale()
+        zoom = old_zoom = self.pixmap_item.scale()
 
         zoom = math.exp(math.log(zoom) + event.angleDelta().y()/1000)
         if zoom > MAX_ZOOM:
@@ -110,7 +109,7 @@ class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
                 friend._in_sync = False
 
     def _zoom(self, zoom):
-        [item] = self.scene().items()
+        item = self.pixmap_item
         item.setScale(zoom)
         self.setSceneRect(0, 0,
                           item.boundingRect().width() * zoom,
@@ -235,12 +234,21 @@ class Gui(object):
         self.need_preview_update = False
 
         for name in VIEWS:
-            self.scenes[name].clear()
             view = self.win.findChild(QtWidgets.QGraphicsView, 'gv_' + name)
 
             analyzer = self.analyzer
             pixmap = qpixmap_from_float_array(analyzer.arrays['img_' + name])
-            view.pixmap_item = self.scenes[name].addPixmap(pixmap)
+
+            scene = self.scenes[name]
+            item = getattr(view, 'pixmap_item', None)
+            if item:
+                zoom = item.scale()
+                scene.clear()
+            else:
+                zoom = 1
+
+            view.pixmap_item = scene.addPixmap(pixmap)
+            view.pixmap_item.setScale(zoom)
 
     def populate_translation_menu(self):
         menu = self.win.findChild(QtWidgets.QMenu, 'menuLanguage')
