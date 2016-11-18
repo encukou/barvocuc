@@ -216,10 +216,13 @@ class Gui(object):
         return scene
 
     def load_preview(self, filename):
-        self.need_preview_update = True
-
         self.analyzer = ImageAnalyzer(filename, settings=self.settings)
+        self.update_preview(settings_reset=False)
 
+    def update_preview(self, *, settings_reset=True):
+        self.need_preview_update = True
+        if settings_reset:
+            self.analyzer = self.analyzer.clone(settings=self.settings)
         QtCore.QTimer.singleShot(0, self._update_preview)
 
     def _update_preview(self):
@@ -332,7 +335,7 @@ class Gui(object):
     def threshold_changed(self, value, n):
         self.settings.color_thresholds[n] = value
         self.update_threshold_minmax(n)
-        self.load_preview(get_filename('media/default.png'))
+        self.update_preview()
 
     def update_threshold_minmax(self, n):
         value = self.color_sbinboxes[n].value()
@@ -345,7 +348,7 @@ class Gui(object):
     def special_changed(self, value, name):
         self.settings.special_thresholds[name] = value / 100
         self.update_special_minmax(name)
-        self.load_preview(get_filename('media/default.png'))
+        self.update_preview()
 
     def update_special_minmax(self, name):
         value = self.special_sbinboxes[name].value()

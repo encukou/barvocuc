@@ -12,10 +12,7 @@ not_ = numpy.logical_not
 
 
 class ImageAnalyzer:
-    def __init__(self, image, *, settings=None):
-        if not isinstance(image, Image.Image):
-            image = Image.open(image)
-
+    def __init__(self, image, *, settings=None, rgba_array=None):
         if settings is None:
             settings = Settings()
         self.settings = settings
@@ -24,14 +21,24 @@ class ImageAnalyzer:
         self.results = _FillDict(self._result_factories, self)
         self.images = _FillDict(self._image_factories, self)
 
-        # RGBA
-        image = image.convert('RGBA')
+        if rgba_array is None:
+            if not isinstance(image, Image.Image):
+                image = Image.open(image)
 
-        # Get individual pixels
-        self.arrays['rgba'] = arr = numpy.array(image) / 256.
+            # RGBA
+            image = image.convert('RGBA')
 
-        self.results['width'] = self.width = image.width
-        self.results['height'] = self.height = image.height
+            # Get individual pixels
+            self.arrays['rgba'] = arr = numpy.array(image) / 256.
+        else:
+            self.arrays['rgba'] = arr = rgba_array
+
+        self.results['width'] = self.width = self.arrays['rgba'].shape[1]
+        self.results['height'] = self.height = self.arrays['rgba'].shape[0]
+
+    def clone(self, settings=None):
+        return ImageAnalyzer(image=None, rgba_array=self.arrays['rgba'],
+                             settings=settings or self.settings)
 
     _array_factories = {}
     _result_factories = {}
