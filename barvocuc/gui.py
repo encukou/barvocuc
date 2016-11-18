@@ -20,6 +20,8 @@ _weakdict = weakref.WeakKeyDictionary()
 
 COLOR_SPINBOXES = False  # TODO: Turn on?
 
+translate = QtCore.QCoreApplication.translate
+
 def get_filename(name):
     return os.path.join(os.path.dirname(__file__), name)
 
@@ -198,6 +200,16 @@ class Gui(object):
         locale_name = settings.value('barvocuc/lang', default_locale_name)
         self.set_locale(QtCore.QLocale(locale_name), save_setting=False)
 
+        for name, func in self._action_handlers.items():
+            signal = self.win.findChild(QtWidgets.QAction, name).triggered
+            signal.connect(lambda *, _func=func: _func(self))
+
+    _action_handlers = {}
+    def action_handler(name, *, _action_handlers=_action_handlers):
+        def _decorator(func):
+            _action_handlers[name] = func
+            return func
+        return _decorator
 
     def retranslate(self):
         self.translator = translator = QtCore.QTranslator()
@@ -443,6 +455,46 @@ class Gui(object):
             lst[n] = color
             self._set_button_color(btn, color)
             self.update_preview()
+
+    @action_handler('actionFactoryResetSettings')
+    def factory_reset_settings(self):
+        self.settings = Settings()
+        self.sync_to_settings()
+        self.update_preview()
+
+    def show_error_box(self, msg, e):
+        QtWidgets.QMessageBox.critical(
+            self.win, msg,
+            '{msg}.\n\n{e.__class__.__name__}: {e}'.format(msg=msg, e=e),
+            )
+
+    @action_handler('actionSaveSettings')
+    def save_settings(self):
+        path, dummy = QtWidgets.QFileDialog.getSaveFileName(
+            caption=translate('MainWindow', 'Save Settings'))
+        if not path:
+            return
+        try:
+            with open(path, 'w') as f:
+                self.settings.save_to(f)
+        except Exception as e:
+            msg = translate('MainWindow', 'Could not save settings')
+            self.show_error_box(msg, e)
+
+    @action_handler('actionLoadSettings')
+    def load_settings(self):
+        path, dummy = QtWidgets.QFileDialog.getOpenFileName(
+            caption=translate('MainWindow', 'Load Settings'))
+        if not path:
+            return None
+        try:
+            with open(path) as f:
+                self.settings = Settings.load_from(f)
+        except Exception as e:
+            msg = translate('MainWindow', 'Could not load settings')
+            self.show_error_box(msg, e)
+        self.sync_to_settings()
+        self.update_preview()
 
 
 def main():

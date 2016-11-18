@@ -56,6 +56,8 @@
     </property>
     <addaction name="actionLoadSettings"/>
     <addaction name="actionSaveSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionFactoryResetSettings"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -387,6 +389,11 @@
   <action name="actionOpenLicence">
    <property name="text">
     <string>&amp;License...</string>
+   </property>
+  </action>
+  <action name="actionFactoryResetSettings">
+   <property name="text">
+    <string>Reset to Factory Defaults</string>
    </property>
   </action>
  </widget>
