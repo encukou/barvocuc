@@ -1,5 +1,10 @@
+import json
+import collections
+
 COLOR_NAMES = 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'
 SPECIAL_NAMES = 'white', 'gray', 'black', 'colorful'
+
+IMAGE_NAMES = 'source', 'colors', 'sobel', 'opacity', 'montage'
 
 FIELD_NAMES = {
     'en': {
@@ -57,6 +62,28 @@ for table in FIELD_NAMES.values():
             table.setdefault(ident + '%', '% ' + name)
 
 
+def to_hex(rgb):
+    return '#{0:02x}{1:02x}{2:02x}'.format(*(int(c*255) for c in rgb))
+
+
+def from_hex(hexcolor):
+    if len(hexcolor) != 7:
+        raise ValueError('bad color: {}'.format(hexcolor))
+    if hexcolor[0] != '#':
+        raise ValueError('bad color: {}'.format(hexcolor))
+    return tuple(clamp(int(hexcolor[i:i+2], 16) / 255, float, 0, 1)
+                 for i in range(1, 7, 2))
+
+
+def clamp(n, type, a, b):
+    n = type(n)
+    if n < a:
+        return a
+    if n > b:
+        return b
+    return n
+
+
 class Settings:
     def __init__(self):
         self.special_thresholds = {
@@ -86,27 +113,27 @@ class Settings:
         ]
 
         self.special_display_colors = [
-            (1, 1, 1),
-            (.5, .5, .5),
-            (0, 0, 0),
+            from_hex('#ffffff'),
+            from_hex('#7f7f7f'),
+            from_hex('#000000'),
         ]
         self.main_display_colors = [
-            (1, 0, 0),
-            (1, 0.5, 0),
-            (1, 1, 0),
-            (0, 1, 0),
-            (0, 0, 1),
-            (1, 0, 1),
-            (1, 0, 0.5),
+            from_hex('#ff0000'),
+            from_hex('#ff7f00'),
+            from_hex('#ffff00'),
+            from_hex('#00ff00'),
+            from_hex('#0000ff'),
+            from_hex('#ff00ff'),
+            from_hex('#ff007f'),
         ]
         self.transition_display_colors = [
-            (0.5, 0, 0),
-            (0.5, 0.25, 0),
-            (0.5, 0.5, 0),
-            (0, 0.5, 0.5),
-            (0, 0, 0.5),
-            (0.5, 0, 0.5),
-            (0.5, 0, 0.25),
+            from_hex('#7f0000'),
+            from_hex('#7f3f00'),
+            from_hex('#7f7f00'),
+            from_hex('#007f7f'),
+            from_hex('#00007f'),
+            from_hex('#7f007f'),
+            from_hex('#7f003f'),
         ]
 
     @property
@@ -117,3 +144,90 @@ class Settings:
     def lang(self, value):
         self.field_names = FIELD_NAMES[value]
         self._lang = value
+
+    def to_dict(self):
+        result = collections.OrderedDict()
+        result['version'] = 2
+
+        tr = result['thresholds'] = collections.OrderedDict()
+        tr['color'] = self.color_thresholds
+        tr['special'] = collections.OrderedDict(
+            (k, self.special_thresholds[k])
+            for k in SPECIAL_NAMES
+            if k in self.special_thresholds)
+
+        dc = result['display_colors'] = collections.OrderedDict()
+        dc['main'] = [to_hex(c) for c in self.main_display_colors]
+        dc['transition'] = [to_hex(c) for c in self.transition_display_colors]
+        dc['special'] = [to_hex(c) for c in self.special_display_colors]
+
+        out = result['output'] = collections.OrderedDict()
+        out['csv_fields'] = self.csv_output_fields
+        out['images'] = self.output_images
+
+        result['lang'] = self.lang
+        return result
+
+    def from_dict(self, dct):
+        if dct.get('version', 2) != 2:
+            raise ValueError('wrong data version')
+
+        tr = dct.get('thresholds')
+        if tr:
+            color = tr.get('color')
+            if color:
+                color = list(color)
+                if len(color) != len(self.color_thresholds):
+                    raise ValueError('tresholds/color: wrong size of list')
+                self.color_thresholds = [clamp(c, int, 0, 360) for c in color]
+            special = tr.get('special')
+            if special:
+                sspt = self.special_thresholds
+                for key in sspt:
+                    value = special.get(key)
+                    if value is not None:
+                        sspt[key] = clamp(value, float, 0, 1)
+
+        dc = dct.get('display_colors')
+        if dc:
+            for name, lst in (
+                    ('main', self.main_display_colors),
+                    ('transition', self.transition_display_colors),
+                    ('special', self.special_display_colors),
+                    ):
+                source = dc.get(name)
+                if source:
+                    if len(source) > len(lst):
+                        template = 'display_colors/{}: wrong size of list'
+                        raise ValueError(template.format(name))
+                    for i, (hexcolor, prev) in enumerate(zip(source, lst)):
+                        lst[i] = from_hex(hexcolor)
+
+        out = dct.get('output')
+        if out:
+            csvf = out.get('csv_fields')
+            if csvf is not None:
+                csvf = list(str(f) for f in csvf if f in FIELD_NAMES['en'])
+                if csvf:
+                    self.csv_output_fields = csvf
+            imgs = out.get('images')
+            if imgs is not None:
+                imgs = list(str(f) for f in imgs if f in IMAGE_NAMES)
+                if imgs:
+                    self.output_images = imgs
+
+        lang = dct.get('lang')
+        if lang is not None and lang in FIELD_NAMES:
+            self.lang = lang
+
+    def save_to(self, f):
+        representation = self.to_dict()
+        json.dump(representation, f, indent=4, ensure_ascii=False)
+        f.write('\n')
+
+    @classmethod
+    def load_from(cls, f):
+        dct = json.load(f)
+        result = cls()
+        result.from_dict(dct)
+        return result
