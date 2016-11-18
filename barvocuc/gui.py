@@ -288,15 +288,15 @@ class Gui(object):
 
         L = len(self.settings.color_thresholds)
 
-        def _add_label_and_color_picker(row, col, text, color, label_list):
+        def _add_label_and_color_picker(row, col, text, n_color, label_list):
             label = QtWidgets.QLabel(text)
             layout.addWidget(label, row+header_rows, col, QtCore.Qt.AlignRight)
             label_list.append(label)
 
             btn = QtWidgets.QPushButton()
-            css_template = "QPushButton { background-color: #%02X%02X%02X}"
-            btn.setStyleSheet(css_template % tuple(int(x*255) for x in color))
+            self.color_buttons[n_color] = btn
             layout.addWidget(btn, row+header_rows, col+1)
+            btn.clicked.connect(lambda: self.pick_preview_color(n_color))
 
         def _add_spinbox(row, col, suffix, n, box_list, func):
             box = QtWidgets.QSpinBox()
@@ -311,7 +311,7 @@ class Gui(object):
                              self.settings.transition_display_colors)
         for i, (color_name, next_color_name, color, t_color
                     ) in enumerate(colorname_iter):
-            _add_label_and_color_picker(i, 0, color_name, color,
+            _add_label_and_color_picker(i, 0, color_name, i,
                                         self.win.color_labels)
 
             _add_spinbox(i, 2, '°', (i*2-2) % L,
@@ -320,16 +320,16 @@ class Gui(object):
                          self.color_sbinboxes, self.threshold_changed)
 
             label_text = '{}+{}:'.format(color_name, next_color_name)
-            _add_label_and_color_picker(i, 5, label_text, t_color,
+            _add_label_and_color_picker(i, 5, label_text, i+len(COLOR_NAMES),
                                         self.win.combo_labels)
 
         ziter = zip(SPECIAL_NAMES, self.settings.special_display_colors)
         for i, (color_name, color) in enumerate(ziter):
             _add_label_and_color_picker(i+len(COLOR_NAMES), 0,
-                                        color_name, color,
+                                        color_name, i+len(COLOR_NAMES)*2,
                                         self.win.special_labels)
 
-            _add_spinbox(i+len(COLOR_NAMES), 3 if i < 2 else 2, '%', color_name,
+            _add_spinbox(i+len(COLOR_NAMES), 3 if i else 2, '%', color_name,
                          self.special_sbinboxes, self.special_changed)
 
     def threshold_changed(self, value, n):
@@ -390,6 +390,37 @@ class Gui(object):
 
         for name in self.special_sbinboxes:
             self.update_special_minmax(name)
+
+        allcolors = (self.settings.main_display_colors
+                     + self.settings.transition_display_colors
+                     + self.settings.special_display_colors)
+        for btn, color in zip(self.color_buttons, allcolors):
+            self._set_button_color(btn, color)
+
+    def _set_button_color(self, btn, color):
+        css_template = "QPushButton { background-color: #%02X%02X%02X}"
+        btn.setStyleSheet(css_template % tuple(int(x*255) for x in color))
+
+    def pick_preview_color(self, n):
+        btn = self.color_buttons[n]
+
+        N = len(COLOR_NAMES)
+        if n < N:
+            lst = self.settings.main_display_colors
+        elif n < N * 2:
+            lst = self.settings.transition_display_colors
+            n -= N
+        else:
+            lst = self.settings.special_display_colors
+            n -= N * 2
+
+        qcolor = QtGui.QColor(*(x*255 for x in lst[n]))
+        qcolor = QtWidgets.QColorDialog.getColor(qcolor)
+        if qcolor.isValid():
+            color = qcolor.redF(), qcolor.greenF(), qcolor.blueF()
+            lst[n] = color
+            self._set_button_color(btn, color)
+            self.update_preview()
 
 
 def main():
