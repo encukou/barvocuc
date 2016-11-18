@@ -61,6 +61,9 @@ class SynchronizedGraphicsView(QtWidgets.QGraphicsView):
         self.verticalScrollBar().valueChanged.connect(self._sync_scrollbars)
 
     def wheelEvent(self, event):
+        if self.pixmap_item is None:
+            return
+
         old_pos = self.mapToScene(event.pos())
 
         zoom = old_zoom = self.pixmap_item.scale()
@@ -238,7 +241,15 @@ class Gui(object):
         return scene
 
     def load_preview(self, filename):
-        self.analyzer = ImageAnalyzer(filename, settings=self.settings)
+        try:
+            self.analyzer = ImageAnalyzer(filename, settings=self.settings)
+        except Exception as e:
+            self.analyzer = None
+            msg = '{e.__class__.__name__}: {e}'.format(e=e)
+        else:
+            msg = '{a.width}×{a.height}px - {name}'.format(a=self.analyzer,
+                                                           name=filename)
+        self.win.statusBar().showMessage(msg)
         self.update_preview(settings_reset=False)
 
     def update_preview(self, *, settings_reset=True):
@@ -257,18 +268,20 @@ class Gui(object):
             view = self.win.findChild(QtWidgets.QGraphicsView, 'gv_' + name)
 
             analyzer = self.analyzer
-            pixmap = qpixmap_from_float_array(analyzer.arrays['img_' + name])
-
             scene = self.scenes[name]
             item = getattr(view, 'pixmap_item', None)
             if item:
                 zoom = item.scale()
                 scene.clear()
+                view.pixmap_item = None
             else:
                 zoom = 1
 
-            view.pixmap_item = scene.addPixmap(pixmap)
-            view._zoom(zoom)
+            if analyzer:
+                pixmap = qpixmap_from_float_array(analyzer.arrays['img_' + name])
+
+                view.pixmap_item = scene.addPixmap(pixmap)
+                view._zoom(zoom)
 
     def populate_translation_menu(self):
         menu = self.win.findChild(QtWidgets.QMenu, 'menuLanguage')
