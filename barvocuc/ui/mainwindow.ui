@@ -191,7 +191,7 @@
   </widget>
   <widget class="QDockWidget" name="dock_source">
    <property name="allowedAreas">
-    <set>Qt::BottomDockWidgetArea</set>
+    <set>Qt::AllDockWidgetAreas</set>
    </property>
    <property name="windowTitle">
     <string>I&amp;nput Image</string>
@@ -212,7 +212,7 @@
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="allowedAreas">
-    <set>Qt::BottomDockWidgetArea</set>
+    <set>Qt::AllDockWidgetAreas</set>
    </property>
    <property name="windowTitle">
     <string>&amp;Colors</string>
@@ -230,7 +230,7 @@
   </widget>
   <widget class="QDockWidget" name="dock_sobel">
    <property name="allowedAreas">
-    <set>Qt::BottomDockWidgetArea</set>
+    <set>Qt::AllDockWidgetAreas</set>
    </property>
    <property name="windowTitle">
     <string>E&amp;dges</string>
@@ -248,7 +248,7 @@
   </widget>
   <widget class="QDockWidget" name="dock_opacity">
    <property name="allowedAreas">
-    <set>Qt::BottomDockWidgetArea</set>
+    <set>Qt::AllDockWidgetAreas</set>
    </property>
    <property name="windowTitle">
     <string>Opacit&amp;y</string>

@@ -187,6 +187,9 @@ class Gui(object):
         self.populate_translation_menu()
         self.populate_settings_dock()
 
+        self.win.findChild(QtWidgets.QDockWidget, 'dock_sobel').hide()
+        self.win.findChild(QtWidgets.QDockWidget, 'dock_opacity').hide()
+
         settings = QtCore.QSettings()
         self.sync_to_settings()
 
