@@ -527,6 +527,7 @@ class Gui(object):
             item = QtWidgets.QTreeWidgetItem()
             item.setText(0, path)
             item.setData(0, QtCore.Qt.UserRole, path)
+            item.setData(0, QtCore.Qt.ToolTipRole, path)
             widget.addTopLevelItem(item)
         if item:
             widget.setCurrentItem(item)
