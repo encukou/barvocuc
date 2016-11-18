@@ -188,6 +188,7 @@ class Gui(object):
         self.populate_settings_dock()
 
         settings = QtCore.QSettings()
+        self.sync_to_settings()
 
         default_locale_name = QtCore.QLocale().bcp47Name()
         locale_name = settings.value('barvocuc/lang', default_locale_name)
@@ -215,14 +216,23 @@ class Gui(object):
         return scene
 
     def load_preview(self, filename):
-        win = self.win
+        self.need_preview_update = True
 
-        self.analyzer = analyzer = ImageAnalyzer(filename,
-                                                 settings=self.settings)
+        self.analyzer = ImageAnalyzer(filename, settings=self.settings)
+
+        QtCore.QTimer.singleShot(0, self._update_preview)
+
+    def _update_preview(self):
+        if not self.need_preview_update:
+            return
+
+        self.need_preview_update = False
 
         for name in VIEWS:
-            view = win.findChild(QtWidgets.QGraphicsView, 'gv_' + name)
+            self.scenes[name].clear()
+            view = self.win.findChild(QtWidgets.QGraphicsView, 'gv_' + name)
 
+            analyzer = self.analyzer
             pixmap = qpixmap_from_float_array(analyzer.arrays['img_' + name])
             view.pixmap_item = self.scenes[name].addPixmap(pixmap)
 
@@ -269,6 +279,11 @@ class Gui(object):
         self.win.color_labels = []
         self.win.combo_labels = []
         self.win.special_labels = []
+        self.color_sbinboxes = [None for i in COLOR_NAMES*2]
+        self.special_sbinboxes = {}
+        self.color_buttons = [None for i in range(len(COLOR_NAMES)*2 + 3)]
+
+        L = len(self.settings.color_thresholds)
 
         def _add_label_and_color_picker(row, col, text, color, label_list):
             label = QtWidgets.QLabel(text)
@@ -280,6 +295,14 @@ class Gui(object):
             btn.setStyleSheet(css_template % tuple(int(x*255) for x in color))
             layout.addWidget(btn, row+header_rows, col+1)
 
+        def _add_spinbox(row, col, suffix, n, box_list, func):
+            box = QtWidgets.QSpinBox()
+            box.setSuffix(suffix)
+            layout.addWidget(box, row+header_rows, col)
+            box.valueChanged.connect(lambda v: func(v, n))
+            box_list[n] = box
+            return box
+
         colorname_iter = zip(COLOR_NAMES, COLOR_NAMES[1:] + COLOR_NAMES[:1],
                              self.settings.main_display_colors,
                              self.settings.transition_display_colors)
@@ -288,22 +311,10 @@ class Gui(object):
             _add_label_and_color_picker(i, 0, color_name, color,
                                         self.win.color_labels)
 
-            box = QtWidgets.QSpinBox()
-            box.setSuffix('°')
-            box.setMaximum(360)
-            box.setValue(self.settings.color_thresholds[i*2-2])
-            layout.addWidget(box, i+header_rows, 2)
-            box.valueChanged.connect(lambda v, n=i*2-2:
-                                         self.threshold_changed(v, n))
-
-            box = QtWidgets.QSpinBox()
-            box.setSuffix('°')
-            box.setMaximum(360)
-            l = len(self.settings.color_thresholds)
-            box.setValue(self.settings.color_thresholds[(i*2+1) % l])
-            layout.addWidget(box, i+header_rows, 3)
-            box.valueChanged.connect(lambda v, n=i*2+1:
-                                         self.threshold_changed(v, n))
+            _add_spinbox(i, 2, '°', (i*2-2) % L,
+                         self.color_sbinboxes, self.threshold_changed)
+            _add_spinbox(i, 3, '°', (i*2+1) % L,
+                         self.color_sbinboxes, self.threshold_changed)
 
             label_text = '{}+{}:'.format(color_name, next_color_name)
             _add_label_and_color_picker(i, 5, label_text, t_color,
@@ -315,16 +326,67 @@ class Gui(object):
                                         color_name, color,
                                         self.win.special_labels)
 
-            box = QtWidgets.QSpinBox()
-            box.setSuffix('%')
-            box.setMinimum(0)
-            box.setMaximum(100)
-            col = 3 if i < 2 else 2
-            layout.addWidget(box, i+len(COLOR_NAMES)+header_rows, col)
+            _add_spinbox(i+len(COLOR_NAMES), 3 if i < 2 else 2, '%', color_name,
+                         self.special_sbinboxes, self.special_changed)
 
     def threshold_changed(self, value, n):
         self.settings.color_thresholds[n] = value
+        self.update_threshold_minmax(n)
         self.load_preview(get_filename('media/default.png'))
+
+    def update_threshold_minmax(self, n):
+        value = self.color_sbinboxes[n].value()
+
+        if n + 1 < len(self.settings.color_thresholds):
+            self.color_sbinboxes[n + 1].setMinimum(value)
+        if n - 1 >= 0:
+            self.color_sbinboxes[n - 1].setMaximum(value)
+
+    def special_changed(self, value, name):
+        self.settings.special_thresholds[name] = value / 100
+        self.update_special_minmax(name)
+        self.load_preview(get_filename('media/default.png'))
+
+    def update_special_minmax(self, name):
+        value = self.special_sbinboxes[name].value()
+
+        if name == 'white':
+            self.special_sbinboxes['black'].setMaximum(value)
+        if name == 'black':
+            self.special_sbinboxes['white'].setMinimum(value)
+
+    def sync_to_settings(self):
+        for box in self.color_sbinboxes:
+            box.setMinimum(0)
+            box.setMaximum(360)
+
+        ziter = zip(self.color_sbinboxes, self.settings.color_thresholds)
+        for i, (box, value) in enumerate(ziter):
+            prev_block = box.blockSignals(True)
+            try:
+                box.setValue(value)
+            finally:
+                box.blockSignals(prev_block)
+
+        for n, box in enumerate(self.color_sbinboxes):
+            self.update_threshold_minmax(n)
+
+        for box in self.special_sbinboxes.values():
+            box.setMinimum(0)
+            box.setMaximum(100)
+
+        for name in SPECIAL_NAMES:
+            value = self.settings.special_thresholds.get(name)
+            if value is not None:
+                box = self.special_sbinboxes[name]
+                prev_block = box.blockSignals(True)
+                try:
+                    box.setValue(int(value * 100))
+                finally:
+                    box.blockSignals(prev_block)
+
+        for name in self.special_sbinboxes:
+            self.update_special_minmax(name)
 
 
 def main():
