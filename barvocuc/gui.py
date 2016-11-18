@@ -29,6 +29,9 @@ PATH_ROLE = QtCore.Qt.UserRole
 DONE_ROLE = QtCore.Qt.UserRole + 1
 DATA_ROLE = QtCore.Qt.UserRole + 2
 
+COLUMN_NAMES = ['filename'] + Settings().csv_output_fields + ['error']
+
+
 def get_filename(name):
     return os.path.join(os.path.dirname(__file__), name)
 
@@ -210,14 +213,10 @@ class Gui(object):
         treewidget.header().resizeSection(0, 200)
         self.item_selection_changed()
 
-        column_names = [
-            FIELD_NAMES[self.settings.lang].get(n, n)
-            for n in ['filename'] + Settings().csv_output_fields + ['error']
-        ]
-        treewidget.setHeaderLabels(column_names)
+        treewidget.setHeaderLabels(COLUMN_NAMES)
         treewidget.header().setSectionResizeMode(
             QtWidgets.QHeaderView.ResizeToContents)
-        self.error_column_no = len(column_names) - 1
+        self.error_column_no = len(COLUMN_NAMES) - 1
 
         self.populate_view_menu()
         self.populate_translation_menu()
@@ -482,6 +481,12 @@ class Gui(object):
     def _lang_changed(self, lang):
         self.settings.lang = lang
         self.sync_to_settings()
+        column_names = [
+            FIELD_NAMES[self.settings.lang].get(n, n)
+            for n in COLUMN_NAMES
+        ]
+        treewidget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
+        treewidget.setHeaderLabels(column_names)
 
     def _set_button_color(self, btn, color):
         css_template = "QPushButton { background-color: #%02X%02X%02X}"
@@ -634,6 +639,8 @@ class Gui(object):
         pos = self._analysis_position
         if N:
             pos %= N
+        else:
+            pos = 0
         self._analysis_position += 1
         for i in itertools.chain(range(pos, N), range(pos)):
             item = widget.topLevelItem(i)
