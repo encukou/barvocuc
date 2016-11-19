@@ -281,6 +281,5 @@ class Settings:
             ),
             model_version=1,
         )
-        print(result['display_colors']['special'])
 
         return result

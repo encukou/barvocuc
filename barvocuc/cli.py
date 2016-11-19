@@ -5,7 +5,7 @@ from .batch import generate_csv
 
 @click.group()
 def cli():
-    print('g')
+    pass
 
 
 @cli.command()
