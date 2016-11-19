@@ -20,13 +20,16 @@ setup_args = dict(
         'Programming Language :: Python :: 3.5',
         ],
     install_requires=[
-        #'PyQT5',       # Not readily installable via pip
-        'PyYAML',
         'Pillow',
         'Numpy',
         'Scipy',
         'Click',
         ],
+    extras_require={
+        'gui':  ["PyQT5"],      # GUI support
+        'oldconf': ["PyYAML"],  # Old config file support
+        'test': ["pytest"],     # Test suite
+    },
     zip_safe=False,
 )
 
@@ -40,6 +43,7 @@ if sys.platform == 'win32':
                   "Tkconstants", "Tkinter", "tcl",
                   ]
     ))
+    setup_args['install_requires'].extend(['PyQT5', 'PyYAML'])
 
 
 setup(**setup_args)
