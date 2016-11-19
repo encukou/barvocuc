@@ -40,7 +40,7 @@ def generate_csv(csv_file, paths, *, settings=None, outdir=None):
     if csv_file:
         writers.append(csv.writer(csv_file, lineterminator='\n'))
     if outdir:
-        outfile = open(os.path.join(outdir, 'out.csv'), 'w')
+        outfile = open(os.path.join(outdir, 'out.csv'), 'w', encoding='utf-8')
         writers.append(csv.writer(outfile, lineterminator='\n'))
 
     def writerow(row):

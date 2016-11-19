@@ -1,11 +1,15 @@
 import os
 import io
+import sys
 
 import pytest
 
 from barvocuc.batch import generate_csv
 from barvocuc.settings import Settings
 
+
+pytestmark = pytest.mark.skipif(sys.platform == 'win32',
+                                reason="file format different on windows")
 
 basedir = os.path.dirname(__file__)
 
@@ -14,14 +18,15 @@ def example_filename(name):
 
 @pytest.mark.parametrize('lang', ['cs', 'en'])
 def test_gen_csv_cs(lang):
-    with open(example_filename('test_settings.dat')) as f:
+    with open(example_filename('test_settings.dat'), encoding='utf-8') as f:
         settings = Settings.load_from(f)
     settings.lang = lang
 
     with io.StringIO() as f:
         generate_csv(f, [basedir], settings=settings)
         got = f.getvalue()
-    with open(os.path.join(basedir, 'expected_{}.csv'.format(lang))) as f:
+    with open(os.path.join(basedir, 'expected_{}.csv'.format(lang)),
+              encoding='utf-8') as f:
         expected = f.read()
     assert got == expected
 
@@ -45,7 +50,7 @@ def assert_dirs_same(adir, bdir):
 
 
 def test_gen_dir(tmpdir):
-    with open(example_filename('test_settings.dat')) as f:
+    with open(example_filename('test_settings.dat'), encoding='utf-8') as f:
         settings = Settings.load_from(f)
 
     with io.StringIO() as f:

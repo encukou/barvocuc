@@ -1,0 +1,37 @@
+clone_folder: c:\projects\barvocuc
+clone_depth: 2
+
+platform: x64
+
+environment:
+  matrix:
+  - PYTHON: "C:\\Python35-x64"
+
+cache:
+- C:\Users\appveyor\pip\wheels
+- '%LOCALAPPDATA%\pip\Cache'
+
+install:
+- "%PYTHON%\\python.exe -m pip install -U pip"
+- "%PYTHON%\\python.exe -m pip install -i https://pypi.anaconda.org/encukou/simple/ numpy scipy"
+- "%PYTHON%\\python.exe -m pip install -e.[gui,oldconf,test] pyinstaller"
+
+build: off
+
+test_script:
+- "%PYTHON%\\python.exe -m pytest"
+
+after_test:
+- "%PYTHON%\\python.exe -m PyInstaller barvocuc.pyinstaller.spec"
+
+artifacts:
+- path: dist\*
+
+#deploy:
+#- provider: GitHub
+  #artifact: dist\*.whl
+  #draft: true
+  #prerelease: true
+  #on:
+    #branch: master
+    #appveyor_repo_tag: true

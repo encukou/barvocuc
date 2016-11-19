@@ -86,7 +86,7 @@ def test_concrete_result(analysis, name, result):
 
 
 def test_csv_results(analysis):
-    assert analysis.csv_results == {
+    expected = {
         'width': 416,
         'height': 200,
         'white%': 6.3558334914810475,
@@ -109,6 +109,11 @@ def test_csv_results(analysis):
         'opacity%': 99.15628756009616,
         'opaque_pixels': 82498.03125,
     }
+    got = analysis.csv_results
+    assert sorted(got) == sorted(expected)
+    for key, value in sorted(expected.items()):
+        print(key)
+        assert math.isclose(got[key], value)
 
 
 @pytest.mark.parametrize(

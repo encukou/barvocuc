@@ -38,12 +38,9 @@ if sys.platform == 'win32':
     setup_args.update(dict(
         zipfile=None,
         console=['gui.py'],
-        excludes=["pywin", "pywin.debugger", "pywin.debugger.dbgcon",
-                  "pywin.dialogs", "pywin.dialogs.list",
-                  "Tkconstants", "Tkinter", "tcl",
-                  ]
     ))
     setup_args['install_requires'].extend(['PyQT5', 'PyYAML'])
 
 
-setup(**setup_args)
+if __name__ == '__main__':
+    setup(**setup_args)

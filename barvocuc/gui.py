@@ -201,7 +201,7 @@ class Gui(object):
         QtCore.QCoreApplication.setOrganizationDomain("encukou.cz");
         QtCore.QCoreApplication.setApplicationName("Barvocuc");
 
-        with open(get_filename('ui/mainwindow.ui')) as f:
+        with open(get_filename('ui/mainwindow.ui'), encoding='utf-8') as f:
             ui_form_class, ui_base_class = uic.loadUiType(f)
 
         ui_form = ui_form_class()
@@ -563,7 +563,7 @@ class Gui(object):
         if not path:
             return
         try:
-            with open(path, 'w') as f:
+            with open(path, 'w', encoding='utf-8') as f:
                 self.settings.save_to(f)
         except Exception as e:
             msg = translate('MainWindow', 'Could not save settings')
@@ -576,7 +576,7 @@ class Gui(object):
         if not path:
             return None
         try:
-            with open(path) as f:
+            with open(path, encoding='utf-8') as f:
                 self.settings = Settings.load_from(f)
         except Exception as e:
             msg = translate('MainWindow', 'Could not load settings')
@@ -741,7 +741,7 @@ class Gui(object):
                     filter=translate('MainWindow', 'CSV files (*.csv)'),
                     )
             if path:
-                with open(path, 'w') as f:
+                with open(path, 'w', encoding='utf-8') as f:
                     f.write(data)
         except Exception as e:
             self.show_error_box(
@@ -783,12 +783,12 @@ class Gui(object):
         if self.about_dialog:
             dialog = self.about_dialog
         else:
-            with open(get_filename('ui/about.ui')) as f:
+            with open(get_filename('ui/about.ui'), encoding='utf-8') as f:
                 form, cls = uic.loadUiType(f)
 
             dialog = self.about_dialog = AboutDialog(form())
 
-            with open(get_filename('COPYING.html')) as f:
+            with open(get_filename('COPYING.html'), encoding='utf-8') as f:
                 license_html = f.read()
             widget = dialog.findChild(QtWidgets.QTextBrowser, 'textLicense')
             widget.setHtml(license_html)
