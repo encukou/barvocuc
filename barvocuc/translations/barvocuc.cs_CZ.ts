@@ -84,7 +84,7 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Jazyk</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="217"/>
+        <location filename="mainwindow.ui" line="231"/>
         <source>I&amp;nput Image</source>
         <translation>&amp;Vstupní obrázek</translation>
     </message>
@@ -124,17 +124,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Verze algoritmu</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="238"/>
+        <location filename="mainwindow.ui" line="252"/>
         <source>&amp;Colors</source>
         <translation>&amp;Barvy</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="256"/>
+        <location filename="mainwindow.ui" line="270"/>
         <source>E&amp;dges</source>
         <translation>&amp;Hrany</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="274"/>
+        <location filename="mainwindow.ui" line="288"/>
         <source>Opacit&amp;y</source>
         <translation>&amp;Průhlednost</translation>
     </message>
@@ -144,7 +144,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Přidat soubor...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="308"/>
+        <location filename="mainwindow.ui" line="322"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
@@ -154,52 +154,52 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Odstranit soubor</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="321"/>
+        <location filename="mainwindow.ui" line="335"/>
         <source>Add &amp;directory...</source>
         <translation>Přidat &amp;adresář...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="329"/>
+        <location filename="mainwindow.ui" line="343"/>
         <source>Close &amp;program</source>
         <translation>&amp;Zavřít program</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="337"/>
+        <location filename="mainwindow.ui" line="351"/>
         <source>&amp;Load settings...</source>
         <translation>&amp;Načíst nastavení...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="342"/>
+        <location filename="mainwindow.ui" line="356"/>
         <source>&amp;Save settings...</source>
         <translation>&amp;Uložit nastavení...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="347"/>
+        <location filename="mainwindow.ui" line="361"/>
         <source>&amp;Copy CSV</source>
         <translation>&amp;Kopírovat CSV</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="350"/>
+        <location filename="mainwindow.ui" line="364"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="355"/>
+        <location filename="mainwindow.ui" line="369"/>
         <source>&amp;Save CSV...</source>
         <translation>&amp;Uložit CSV...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="358"/>
+        <location filename="mainwindow.ui" line="372"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="363"/>
+        <location filename="mainwindow.ui" line="377"/>
         <source>&amp;About Barvocuc...</source>
         <translation>&amp;O programu Barvocuc...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="371"/>
+        <location filename="mainwindow.ui" line="385"/>
         <source>&amp;Licence (GPL)...</source>
         <translation>&amp;Licence (GPL)...</translation>
     </message>
@@ -209,114 +209,132 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Odstranit &amp;všechny soubory</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="379"/>
+        <location filename="mainwindow.ui" line="393"/>
         <source>Ctrl+Del</source>
         <translation>Ctrl+Del</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="384"/>
+        <location filename="mainwindow.ui" line="398"/>
         <source>Save &amp;output to directory...</source>
         <translation>Uložit &amp;výstup do adresáře...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="389"/>
+        <location filename="mainwindow.ui" line="403"/>
         <source>&amp;Documentation...</source>
         <translation>&amp;Dokumentace...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="394"/>
+        <location filename="mainwindow.ui" line="408"/>
         <source>&amp;License...</source>
         <translation>&amp;Licence...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="289"/>
+        <location filename="mainwindow.ui" line="303"/>
         <source>Toolbar</source>
         <translation>Lišta nástrojů</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="399"/>
+        <location filename="mainwindow.ui" line="413"/>
         <source>Reset to Factory Defaults</source>
         <translation>Obnovit výchozí nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="544"/>
+        <location filename="gui.py" line="557"/>
         <source>Save Settings</source>
         <translation>Uložit nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="557"/>
+        <location filename="gui.py" line="570"/>
         <source>Load Settings</source>
         <translation>Načíst nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="552"/>
+        <location filename="gui.py" line="565"/>
         <source>Could not save settings</source>
         <translation>Nepodařilo se uložit nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="565"/>
+        <location filename="gui.py" line="578"/>
         <source>Could not load settings</source>
         <translation>Nepodařilo se načíst nastavení</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="305"/>
+        <location filename="mainwindow.ui" line="319"/>
         <source>&amp;Add image...</source>
         <translation>&amp;Přidat obrázek...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="313"/>
+        <location filename="mainwindow.ui" line="327"/>
         <source>&amp;Remove image</source>
         <translation>&amp;Odstranit obrázek</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="324"/>
+        <location filename="mainwindow.ui" line="338"/>
         <source>Ctrl+Shift+O</source>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="376"/>
+        <location filename="mainwindow.ui" line="390"/>
         <source>Remove all &amp;images</source>
         <translation>Odstranit &amp;všechny obrázky</translation>
     </message>
     <message>
-        <location filename="gui.py" line="572"/>
+        <location filename="gui.py" line="585"/>
         <source>Add Image File</source>
         <translation>Přidat soubor s obrázkem</translation>
     </message>
     <message>
-        <location filename="gui.py" line="619"/>
+        <location filename="gui.py" line="632"/>
         <source>Add Image Directory</source>
         <translation>Přidat adresář obrázků</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="316"/>
+        <location filename="mainwindow.ui" line="330"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="gui.py" line="714"/>
+        <location filename="gui.py" line="727"/>
         <source>Could not copy CSV</source>
         <translation>Nepodařilo se zkopírovat CSV data</translation>
     </message>
     <message>
-        <location filename="gui.py" line="722"/>
+        <location filename="gui.py" line="735"/>
         <source>Save CSV</source>
         <translation>Uložit CSV</translation>
     </message>
     <message>
-        <location filename="gui.py" line="722"/>
+        <location filename="gui.py" line="735"/>
         <source>CSV files (*.csv)</source>
         <translation>Soubory CSV</translation>
     </message>
     <message>
-        <location filename="gui.py" line="750"/>
+        <location filename="gui.py" line="763"/>
         <source>Could not save CSV</source>
         <translation>Nepodařilo se uložit CSV</translation>
     </message>
     <message>
-        <location filename="gui.py" line="744"/>
+        <location filename="gui.py" line="757"/>
         <source>Save to directory</source>
         <translation>Uložit do adresáře</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="201"/>
+        <source>Model version</source>
+        <translation>Verze modelu</translation>
+    </message>
+</context>
+<context>
+    <name>ModelVersion</name>
+    <message>
+        <location filename="gui.py" line="418"/>
+        <source>1 (Initial version)</source>
+        <translation>1 (První verze)</translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="419"/>
+        <source>2 (Fixed 0.392% bug)</source>
+        <translation>2 (Opravení chyby &quot;0,392%&quot;)</translation>
     </message>
 </context>
 <context>

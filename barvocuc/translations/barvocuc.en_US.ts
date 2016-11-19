@@ -80,7 +80,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="217"/>
+        <location filename="mainwindow.ui" line="231"/>
         <source>I&amp;nput Image</source>
         <translation type="unfinished"></translation>
     </message>
@@ -115,183 +115,201 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="238"/>
+        <location filename="mainwindow.ui" line="252"/>
         <source>&amp;Colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="256"/>
+        <location filename="mainwindow.ui" line="270"/>
         <source>E&amp;dges</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="274"/>
+        <location filename="mainwindow.ui" line="288"/>
         <source>Opacit&amp;y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="308"/>
+        <location filename="mainwindow.ui" line="322"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="321"/>
+        <location filename="mainwindow.ui" line="335"/>
         <source>Add &amp;directory...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="329"/>
+        <location filename="mainwindow.ui" line="343"/>
         <source>Close &amp;program</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="337"/>
+        <location filename="mainwindow.ui" line="351"/>
         <source>&amp;Load settings...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="342"/>
+        <location filename="mainwindow.ui" line="356"/>
         <source>&amp;Save settings...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="347"/>
+        <location filename="mainwindow.ui" line="361"/>
         <source>&amp;Copy CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="350"/>
+        <location filename="mainwindow.ui" line="364"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="355"/>
+        <location filename="mainwindow.ui" line="369"/>
         <source>&amp;Save CSV...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="358"/>
+        <location filename="mainwindow.ui" line="372"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="363"/>
+        <location filename="mainwindow.ui" line="377"/>
         <source>&amp;About Barvocuc...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="371"/>
+        <location filename="mainwindow.ui" line="385"/>
         <source>&amp;Licence (GPL)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="379"/>
+        <location filename="mainwindow.ui" line="393"/>
         <source>Ctrl+Del</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="384"/>
+        <location filename="mainwindow.ui" line="398"/>
         <source>Save &amp;output to directory...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="389"/>
+        <location filename="mainwindow.ui" line="403"/>
         <source>&amp;Documentation...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="394"/>
+        <location filename="mainwindow.ui" line="408"/>
         <source>&amp;License...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="289"/>
+        <location filename="mainwindow.ui" line="303"/>
         <source>Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="399"/>
+        <location filename="mainwindow.ui" line="413"/>
         <source>Reset to Factory Defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="544"/>
+        <location filename="gui.py" line="557"/>
         <source>Save Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="557"/>
+        <location filename="gui.py" line="570"/>
         <source>Load Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="552"/>
+        <location filename="gui.py" line="565"/>
         <source>Could not save settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="565"/>
+        <location filename="gui.py" line="578"/>
         <source>Could not load settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="305"/>
+        <location filename="mainwindow.ui" line="319"/>
         <source>&amp;Add image...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="313"/>
+        <location filename="mainwindow.ui" line="327"/>
         <source>&amp;Remove image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="324"/>
+        <location filename="mainwindow.ui" line="338"/>
         <source>Ctrl+Shift+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="376"/>
+        <location filename="mainwindow.ui" line="390"/>
         <source>Remove all &amp;images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="572"/>
+        <location filename="gui.py" line="585"/>
         <source>Add Image File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="619"/>
+        <location filename="gui.py" line="632"/>
         <source>Add Image Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="316"/>
+        <location filename="mainwindow.ui" line="330"/>
         <source>Del</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="714"/>
+        <location filename="gui.py" line="727"/>
         <source>Could not copy CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="722"/>
+        <location filename="gui.py" line="735"/>
         <source>Save CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="722"/>
+        <location filename="gui.py" line="735"/>
         <source>CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="750"/>
+        <location filename="gui.py" line="763"/>
         <source>Could not save CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="744"/>
+        <location filename="gui.py" line="757"/>
         <source>Save to directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="201"/>
+        <source>Model version</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ModelVersion</name>
+    <message>
+        <location filename="gui.py" line="418"/>
+        <source>1 (Initial version)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="419"/>
+        <source>2 (Fixed 0.392% bug)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

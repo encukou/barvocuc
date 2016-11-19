@@ -228,7 +228,7 @@ class Settings:
             self.lang = lang
 
         model_version = dct.get('model_version')
-        if model_version is not None and model_version <= 2:
+        if model_version is not None and 0 < model_version <= 2:
             self.model_version = model_version
 
     def save_to(self, f):

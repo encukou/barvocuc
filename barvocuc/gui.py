@@ -414,6 +414,11 @@ class Gui(object):
             _add_spinbox(i+len(COLOR_NAMES), 3 if i else 2, '%', color_name,
                          self.special_sbinboxes, self.special_changed)
 
+        cbox = self.win.findChild(QtWidgets.QComboBox, 'cb_version')
+        cbox.addItem('1')
+        cbox.addItem('2')
+        cbox.currentIndexChanged[int].connect(self.model_version_changed)
+
     def threshold_changed(self, value, n):
         self.settings.color_thresholds[n] = value
         self.update_threshold_minmax(n)
@@ -450,6 +455,11 @@ class Gui(object):
             self.special_sbinboxes['black'].setMaximum(value)
         if name == 'black':
             self.special_sbinboxes['white'].setMinimum(value)
+
+    def model_version_changed(self, version_index):
+        self.settings.model_version = version_index + 1
+        self.update_preview()
+        self.reset_analysis()
 
     def sync_to_settings(self):
         for box in self.color_sbinboxes:
@@ -490,6 +500,9 @@ class Gui(object):
         for btn, color in zip(self.color_buttons, allcolors):
             self._set_button_color(btn, color)
 
+        cbox = self.win.findChild(QtWidgets.QComboBox, 'cb_version')
+        cbox.setCurrentIndex(self.settings.model_version - 1)
+
         self.reset_analysis()
 
     def _lang_changed(self, lang):
@@ -501,6 +514,10 @@ class Gui(object):
         ]
         treewidget = self.win.findChild(QtWidgets.QTreeWidget, 'file_list')
         treewidget.setHeaderLabels(column_names)
+
+        cbox = self.win.findChild(QtWidgets.QComboBox, 'cb_version')
+        cbox.setItemText(0, translate('ModelVersion', '1 (Initial version)'))
+        cbox.setItemText(1, translate('ModelVersion', '2 (Fixed 0.392% bug)'))
 
     def _set_button_color(self, btn, color):
         css_template = "QPushButton { background-color: #%02X%02X%02X}"
