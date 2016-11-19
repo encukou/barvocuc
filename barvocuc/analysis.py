@@ -29,7 +29,11 @@ class ImageAnalyzer:
             image = image.convert('RGBA')
 
             # Get individual pixels
-            self.arrays['rgba'] = arr = numpy.array(image) / 256.
+            if settings.model_version >= 2:
+                divisor = 255.
+            else:
+                divisor = 256.
+            self.arrays['rgba'] = arr = numpy.array(image) / divisor
         else:
             self.arrays['rgba'] = arr = rgba_array
 

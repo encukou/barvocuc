@@ -80,5 +80,6 @@
             "montage"
         ]
     },
-    "lang": "en"
+    "lang": "en",
+    "model_version": 1
 }

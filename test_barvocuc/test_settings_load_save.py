@@ -161,7 +161,9 @@ def test_from_bad_lang(settings, control):
 def test_load_old():
     with open(example_filename('old_settings.dat')) as f:
         settings = Settings.load_from(f)
-    assert_settings_equal(settings, Settings())
+    control = Settings()
+    control.model_version = 1
+    assert_settings_equal(settings, control)
 
 def test_load_messed_up_old():
     with open(example_filename('messed_up_old_settings.dat')) as f:

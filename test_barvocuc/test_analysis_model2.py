@@ -16,7 +16,7 @@ TEST_IMG_H = 200
 
 def open_analyzer(test_file_name):
     settings = Settings()
-    settings.model_version = 1
+    settings.model_version = 2
     with open(os.path.join(basedir, test_file_name), 'rb') as f:
         analyzer = ImageAnalyzer(f, settings=settings)
     return analyzer
@@ -58,57 +58,62 @@ def test_matrix_shapes_img(analysis, name):
         ('width', 416),
         ('height', 200),
 
-        ('opaque_pixels', 82498.03125),
-        ('opacity', 0.9915628756),
+        ('opaque_pixels', 82821.552941176473),
+        ('opacity', 0.99545135746606339),
 
-        ('white', 0.0635583349),
-        ('black', 0.3140432423),
-        ('gray',  0.0608969551),
+        ('white', 0.063811892101970608),
+        ('black', 0.30867024478235655),
+        ('gray',  0.061138438152122575),
 
-        ('red', 0.1712959912),
-        ('orange', 0.0930192652),
-        ('yellow', 0.0820800364),
-        ('green', 0.1277013429),
-        ('blue', 0.1211278906),
-        ('purple', 0.0589822314),
-        ('pink', 0.0266355788),
+        ('red', 0.17183932798396326),
+        ('orange', 0.093478082999707945),
+        ('yellow', 0.082780337182288818),
+        ('green', 0.12927098260299394),
+        ('blue', 0.12255264046073826),
+        ('purple', 0.059742902955638715),
+        ('pink', 0.027009877508440541),
 
-        ('avg_h', 18.0988293378),
-        ('avg_s', 0.780140703333),
-        ('avg_l', 0.35956495528),
+        ('avg_h', 18.152650576308961),
+        ('avg_s', 0.7849664022859939),
+        ('avg_l', 0.36097501392765707),
 
-        ('stddev_h', 86.9203611561),
-        ('stddev_s', 0.341656456209),
-        ('stddev_l', 0.249156391673),
+        ('stddev_h', 87.073142794455634),
+        ('stddev_s', 0.34326393986482562),
+        ('stddev_l', 0.25013347556176846),
     ])
 def test_concrete_result(analysis, name, result):
     assert math.isclose(analysis.results[name], result)
 
 
 def test_csv_results(analysis):
-    assert analysis.csv_results == {
+    expected = {
         'width': 416,
         'height': 200,
-        'white%': 6.3558334914810475,
-        'black%': 31.404324231979778,
-        'gray%': 6.0896955116731952,
-        'red%': 17.129599115433436,
-        'orange%': 9.3019265232465767,
-        'yellow%': 8.2080036379656018,
-        'green%': 12.770134287295493,
-        'blue%': 12.112789055193362,
-        'purple%': 5.8982231394158271,
-        'pink%': 2.6635578803585083,
-        'avg_h': 18.098829337769523,
-        'avg_s': 0.78014070333343444,
-        'avg_l': 0.35956495527950216,
-        'stddev_h': 86.920361156144907,
-        'stddev_s': 0.34165645620949558,
-        'stddev_l': 0.24915639167285492,
-        'avg_sobel': 0.29684081705986493,
-        'opacity%': 99.15628756009616,
-        'opaque_pixels': 82498.03125,
+        'white%': 6.3811892101970606,
+        'black%': 30.867024478235656,
+        'gray%': 6.1138438152122578,
+        'red%': 17.183932798396327,
+        'orange%': 9.3478082999707937,
+        'yellow%': 8.2780337182288815,
+        'green%': 12.927098260299394,
+        'blue%': 12.255264046073826,
+        'purple%': 5.974290295563871,
+        'pink%': 2.7009877508440541,
+        'avg_h': 18.152650576308961,
+        'avg_s': 0.7849664022859939,
+        'avg_l': 0.36097501392765707,
+        'stddev_h': 87.073142794455634,
+        'stddev_s': 0.34326393986482562,
+        'stddev_l': 0.25013347556176846,
+        'avg_sobel': 0.29800489869539376,
+        'opacity%': 99.545135746606334,
+        'opaque_pixels': 82821.552941176473,
     }
+    got = analysis.csv_results
+    assert sorted(got) == sorted(expected)
+    for key, value in sorted(expected.items()):
+        print(key)
+        assert math.isclose(got[key], value)
 
 
 @pytest.mark.parametrize(
@@ -117,12 +122,12 @@ def test_csv_results(analysis):
         ('width', 416),
         ('height', 200),
 
-        ('opaque_pixels', 82498.03125),
-        ('opacity', 0.9915628756),
+        ('opaque_pixels', 82821.552941176473),
+        ('opacity', 0.99545135746606339),
 
-        ('white', 0.0988993771),
-        ('black', 0.3984128220),
-        ('gray',  0.5026878009),
+        ('white', 0.098899377144227307),
+        ('black', 0.39217086430471632),
+        ('gray',  0.50892975855105627),
 
         ('red', 0),
         ('orange', 0),
@@ -134,11 +139,11 @@ def test_csv_results(analysis):
 
         ('avg_h', None),
         ('avg_s', 0),
-        ('avg_l', 0.349445077385),
+        ('avg_l', 0.35081545023797989),
 
         ('stddev_h', None),
         ('stddev_s', 0),
-        ('stddev_l', 0.2850033437),
+        ('stddev_l', 0.28612100382292321,),
     ])
 def test_concrete_result_gray(analysis_gray, name, result):
     got = analysis_gray.results[name]

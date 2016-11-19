@@ -140,6 +140,8 @@ class Settings:
             from_hex('#7f003f'),
         ]
 
+        self.model_version = 2
+
     @property
     def lang(self):
         return self._lang
@@ -170,6 +172,7 @@ class Settings:
         out['images'] = self.output_images
 
         result['lang'] = self.lang
+        result['model_version'] = self.model_version
         return result
 
     def from_dict(self, dct):
@@ -224,6 +227,10 @@ class Settings:
         if lang is not None and lang in FIELD_NAMES:
             self.lang = lang
 
+        model_version = dct.get('model_version')
+        if model_version is not None and model_version <= 2:
+            self.model_version = model_version
+
     def save_to(self, f):
         representation = self.to_dict()
         json.dump(representation, f, indent=4, ensure_ascii=False)
@@ -272,6 +279,7 @@ class Settings:
                 transition=[to_hex(t) for t in yaml_result['colors'][1::2]],
                 special=[to_hex(yaml_result['spc_colors'][i]) for i in (0, 2, 1)],
             ),
+            model_version=1,
         )
         print(result['display_colors']['special'])
 
