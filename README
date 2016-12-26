@@ -37,7 +37,7 @@ Usage
 
 The graphical interface can be started with:
 
-    python3 -m barvocuc gui
+    barvocuc gui
 
 The interface allows setting analysis parameters (thresholds for individual
 colors, model version) and adding images to analyze.
@@ -57,7 +57,7 @@ The parameters can be saved to and restored from files using menu options.
 
 Non-interactive processing is done using the command:
 
-    python3 -m barvocuc analyze IMAGES
+    barvocuc analyze IMAGES
 
 (Substitute source images or directories for `IMAGES`.)
 

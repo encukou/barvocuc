@@ -38,6 +38,9 @@ setup_args = dict(
             'media/*',
         ],
     },
+    entry_points = {
+        'console_scripts': ['barvocuc=barvocuc.cli:cli'],
+    },
     zip_safe=False,
 )
 
