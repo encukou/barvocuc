@@ -74,47 +74,47 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Nápověda</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="87"/>
+        <location filename="mainwindow.ui" line="86"/>
         <source>&amp;View</source>
         <translation>&amp;Zobrazit</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="93"/>
+        <location filename="mainwindow.ui" line="92"/>
         <source>&amp;Language</source>
         <translation>&amp;Jazyk</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="231"/>
+        <location filename="mainwindow.ui" line="230"/>
         <source>I&amp;nput Image</source>
         <translation>&amp;Vstupní obrázek</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="105"/>
+        <location filename="mainwindow.ui" line="104"/>
         <source>Settin&amp;gs</source>
         <translation>Na&amp;stavení</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="123"/>
+        <location filename="mainwindow.ui" line="122"/>
         <source>Color</source>
         <translation>Barva</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="133"/>
+        <location filename="mainwindow.ui" line="132"/>
         <source>To</source>
         <translation>Do</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="143"/>
+        <location filename="mainwindow.ui" line="142"/>
         <source>Combination</source>
         <translation>Kombinace</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="180"/>
+        <location filename="mainwindow.ui" line="179"/>
         <source>Preview</source>
         <translation>Náhled</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="163"/>
+        <location filename="mainwindow.ui" line="162"/>
         <source>From</source>
         <translation>Od</translation>
     </message>
@@ -124,17 +124,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Verze algoritmu</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="252"/>
+        <location filename="mainwindow.ui" line="251"/>
         <source>&amp;Colors</source>
         <translation>&amp;Barvy</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="270"/>
+        <location filename="mainwindow.ui" line="269"/>
         <source>E&amp;dges</source>
         <translation>&amp;Hrany</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="288"/>
+        <location filename="mainwindow.ui" line="287"/>
         <source>Opacit&amp;y</source>
         <translation>&amp;Průhlednost</translation>
     </message>
@@ -144,7 +144,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Přidat soubor...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="322"/>
+        <location filename="mainwindow.ui" line="321"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
@@ -154,52 +154,52 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Odstranit soubor</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="335"/>
+        <location filename="mainwindow.ui" line="334"/>
         <source>Add &amp;directory...</source>
         <translation>Přidat &amp;adresář...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="343"/>
+        <location filename="mainwindow.ui" line="342"/>
         <source>Close &amp;program</source>
         <translation>&amp;Zavřít program</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="351"/>
+        <location filename="mainwindow.ui" line="350"/>
         <source>&amp;Load settings...</source>
         <translation>&amp;Načíst nastavení...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="356"/>
+        <location filename="mainwindow.ui" line="355"/>
         <source>&amp;Save settings...</source>
         <translation>&amp;Uložit nastavení...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="361"/>
+        <location filename="mainwindow.ui" line="360"/>
         <source>&amp;Copy CSV</source>
         <translation>&amp;Kopírovat CSV</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="364"/>
+        <location filename="mainwindow.ui" line="363"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="369"/>
+        <location filename="mainwindow.ui" line="368"/>
         <source>&amp;Save CSV...</source>
         <translation>&amp;Uložit CSV...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="372"/>
+        <location filename="mainwindow.ui" line="371"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="377"/>
+        <location filename="mainwindow.ui" line="376"/>
         <source>&amp;About Barvocuc...</source>
         <translation>&amp;O programu Barvocuc...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="385"/>
+        <location filename="mainwindow.ui" line="384"/>
         <source>&amp;Licence (GPL)...</source>
         <translation>&amp;Licence (GPL)...</translation>
     </message>
@@ -209,32 +209,32 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Odstranit &amp;všechny soubory</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="393"/>
+        <location filename="mainwindow.ui" line="392"/>
         <source>Ctrl+Del</source>
         <translation>Ctrl+Del</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="398"/>
+        <location filename="mainwindow.ui" line="397"/>
         <source>Save &amp;output to directory...</source>
         <translation>Uložit &amp;výstup do adresáře...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="403"/>
+        <location filename="mainwindow.ui" line="402"/>
         <source>&amp;Documentation...</source>
         <translation>&amp;Dokumentace...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="408"/>
+        <location filename="mainwindow.ui" line="407"/>
         <source>&amp;License...</source>
         <translation>&amp;Licence...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="303"/>
+        <location filename="mainwindow.ui" line="302"/>
         <source>Toolbar</source>
         <translation>Lišta nástrojů</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="413"/>
+        <location filename="mainwindow.ui" line="412"/>
         <source>Reset to Factory Defaults</source>
         <translation>Obnovit výchozí nastavení</translation>
     </message>
@@ -259,22 +259,22 @@ p, li { white-space: pre-wrap; }
         <translation>Nepodařilo se načíst nastavení</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="319"/>
+        <location filename="mainwindow.ui" line="318"/>
         <source>&amp;Add image...</source>
         <translation>&amp;Přidat obrázek...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="327"/>
+        <location filename="mainwindow.ui" line="326"/>
         <source>&amp;Remove image</source>
         <translation>&amp;Odstranit obrázek</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="338"/>
+        <location filename="mainwindow.ui" line="337"/>
         <source>Ctrl+Shift+O</source>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="390"/>
+        <location filename="mainwindow.ui" line="389"/>
         <source>Remove all &amp;images</source>
         <translation>Odstranit &amp;všechny obrázky</translation>
     </message>
@@ -289,7 +289,7 @@ p, li { white-space: pre-wrap; }
         <translation>Přidat adresář obrázků</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="330"/>
+        <location filename="mainwindow.ui" line="329"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
@@ -319,7 +319,7 @@ p, li { white-space: pre-wrap; }
         <translation>Uložit do adresáře</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="201"/>
+        <location filename="mainwindow.ui" line="200"/>
         <source>Model version</source>
         <translation>Verze modelu</translation>
     </message>
