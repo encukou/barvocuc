@@ -8,32 +8,32 @@
         <translation>O programu Barvocuc</translation>
     </message>
     <message>
-        <location filename="about.ui" line="48"/>
+        <location filename="about.ui" line="54"/>
         <source>Barvocuc 2.0</source>
         <translation>Barvocuc 2.0</translation>
     </message>
     <message>
-        <location filename="about.ui" line="58"/>
+        <location filename="about.ui" line="64"/>
         <source>Software for Color Image Analysis</source>
         <translation>Program na analýzu barevných obrázků</translation>
     </message>
     <message>
-        <location filename="about.ui" line="94"/>
+        <location filename="about.ui" line="100"/>
         <source>Licensed under the GNU GPL 3.0</source>
         <translation>Poskytnuto pod licencí GNU GPL 3.0</translation>
     </message>
     <message>
-        <location filename="about.ui" line="118"/>
+        <location filename="about.ui" line="140"/>
         <source>Documentation</source>
         <translation>Dokumentace</translation>
     </message>
     <message>
-        <location filename="about.ui" line="136"/>
+        <location filename="about.ui" line="158"/>
         <source>License</source>
         <translation>Licence</translation>
     </message>
     <message>
-        <location filename="about.ui" line="124"/>
+        <location filename="about.ui" line="146"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -48,7 +48,7 @@ p, li { white-space: pre-wrap; }
     <message encoding="UTF-8">
         <location filename="about.ui" line="84"/>
         <source>© 2010,2011,2012,2016 Petr Viktorin</source>
-        <translation>© 2010,2011,2012,2016 Petr Viktorin</translation>
+        <translation type="obsolete">© 2010,2011,2012,2016 Petr Viktorin</translation>
     </message>
 </context>
 <context>
@@ -239,22 +239,22 @@ p, li { white-space: pre-wrap; }
         <translation>Obnovit výchozí nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="557"/>
+        <location filename="gui.py" line="561"/>
         <source>Save Settings</source>
         <translation>Uložit nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="570"/>
+        <location filename="gui.py" line="574"/>
         <source>Load Settings</source>
         <translation>Načíst nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="565"/>
+        <location filename="gui.py" line="569"/>
         <source>Could not save settings</source>
         <translation>Nepodařilo se uložit nastavení</translation>
     </message>
     <message>
-        <location filename="gui.py" line="578"/>
+        <location filename="gui.py" line="582"/>
         <source>Could not load settings</source>
         <translation>Nepodařilo se načíst nastavení</translation>
     </message>
@@ -279,12 +279,12 @@ p, li { white-space: pre-wrap; }
         <translation>Odstranit &amp;všechny obrázky</translation>
     </message>
     <message>
-        <location filename="gui.py" line="585"/>
+        <location filename="gui.py" line="589"/>
         <source>Add Image File</source>
         <translation>Přidat soubor s obrázkem</translation>
     </message>
     <message>
-        <location filename="gui.py" line="632"/>
+        <location filename="gui.py" line="636"/>
         <source>Add Image Directory</source>
         <translation>Přidat adresář obrázků</translation>
     </message>
@@ -294,27 +294,27 @@ p, li { white-space: pre-wrap; }
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="gui.py" line="727"/>
+        <location filename="gui.py" line="731"/>
         <source>Could not copy CSV</source>
         <translation>Nepodařilo se zkopírovat CSV data</translation>
     </message>
     <message>
-        <location filename="gui.py" line="735"/>
+        <location filename="gui.py" line="739"/>
         <source>Save CSV</source>
         <translation>Uložit CSV</translation>
     </message>
     <message>
-        <location filename="gui.py" line="735"/>
+        <location filename="gui.py" line="739"/>
         <source>CSV files (*.csv)</source>
         <translation>Soubory CSV</translation>
     </message>
     <message>
-        <location filename="gui.py" line="763"/>
+        <location filename="gui.py" line="767"/>
         <source>Could not save CSV</source>
         <translation>Nepodařilo se uložit CSV</translation>
     </message>
     <message>
-        <location filename="gui.py" line="757"/>
+        <location filename="gui.py" line="761"/>
         <source>Save to directory</source>
         <translation>Uložit do adresáře</translation>
     </message>
@@ -327,12 +327,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ModelVersion</name>
     <message>
-        <location filename="gui.py" line="418"/>
+        <location filename="gui.py" line="519"/>
         <source>1 (Initial version)</source>
         <translation>1 (První verze)</translation>
     </message>
     <message>
-        <location filename="gui.py" line="419"/>
+        <location filename="gui.py" line="520"/>
         <source>2 (Fixed 0.392% bug)</source>
         <translation>2 (Opravení chyby &quot;0,392%&quot;)</translation>
     </message>

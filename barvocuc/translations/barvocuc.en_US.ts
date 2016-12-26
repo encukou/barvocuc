@@ -8,37 +8,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="about.ui" line="48"/>
+        <location filename="about.ui" line="54"/>
         <source>Barvocuc 2.0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="about.ui" line="58"/>
+        <location filename="about.ui" line="64"/>
         <source>Software for Color Image Analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="about.ui" line="94"/>
+        <location filename="about.ui" line="100"/>
         <source>Licensed under the GNU GPL 3.0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="about.ui" line="118"/>
+        <location filename="about.ui" line="140"/>
         <source>Documentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="about.ui" line="136"/>
+        <location filename="about.ui" line="158"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="about.ui" line="84"/>
-        <source>© 2010,2011,2012,2016 Petr Viktorin</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
-        <location filename="about.ui" line="124"/>
+        <location filename="about.ui" line="146"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -215,22 +210,22 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="557"/>
+        <location filename="gui.py" line="561"/>
         <source>Save Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="570"/>
+        <location filename="gui.py" line="574"/>
         <source>Load Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="565"/>
+        <location filename="gui.py" line="569"/>
         <source>Could not save settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="578"/>
+        <location filename="gui.py" line="582"/>
         <source>Could not load settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -255,12 +250,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="585"/>
+        <location filename="gui.py" line="589"/>
         <source>Add Image File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="632"/>
+        <location filename="gui.py" line="636"/>
         <source>Add Image Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -270,27 +265,27 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="727"/>
+        <location filename="gui.py" line="731"/>
         <source>Could not copy CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="735"/>
+        <location filename="gui.py" line="739"/>
         <source>Save CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="735"/>
+        <location filename="gui.py" line="739"/>
         <source>CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="763"/>
+        <location filename="gui.py" line="767"/>
         <source>Could not save CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="757"/>
+        <location filename="gui.py" line="761"/>
         <source>Save to directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -303,12 +298,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ModelVersion</name>
     <message>
-        <location filename="gui.py" line="418"/>
+        <location filename="gui.py" line="519"/>
         <source>1 (Initial version)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="419"/>
+        <location filename="gui.py" line="520"/>
         <source>2 (Fixed 0.392% bug)</source>
         <translation type="unfinished"></translation>
     </message>
