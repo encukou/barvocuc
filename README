@@ -7,12 +7,16 @@ Software for Color Image Analysis
 Installation
 ------------
 
-Barvocuc requires Python 3.5 or greater to work, and can be installed as
-a Python package.
+For Windows, a package with the graphical interface is available at
+[the GitHub releases page](https://github.com/encukou/barvocuc/releases).
+Select the first `barvocuc-gui.exe` file there.
+
+For other systems, and for using the non-interactive interface,
+`barvocuc` can be installed as a Python package on Python 3.5 or greater.
 Required libraries (such as `Numpy`, `Scipy`, `Pillow` and `PyQT`) should
 be installed automatically this way.
 
-The command to install varies between environments.
+The command to install varies slightly between environments.
 On most Linux distributions,it is:
 
     python3 -m pip install --user barvocuc[gui]
