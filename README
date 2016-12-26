@@ -105,6 +105,23 @@ about collaborating on Github-hosted projects like this one.
 If that doesn’t make sense, please [e-mail the author](encukou@gmail.com)
 for clarification. I’d be happy to help you get started.
 
+### Release checklist
+
+Releasing the software is still a bit cumbersome.
+If you're the maintainer, you can follow these steps to get a release out:
+
+* [ ] Install tools and test deps: `python -m pip install twine -e.[test]`
+* [ ] Run `make` to regenerate message catalogs. Commit if necessary.
+* [ ] Run tests: `python -m pytest test_barvocuc`
+* [ ] Update the version number in `setup.py`
+* [ ] Make the release `rm -rvf dist/ ; python -m setup.py sdist bdist_wheel`
+* [ ] Check files from `dist/` by installing into a fresh virtualenv.
+* [ ] Switch to branch `appveyor`, commit `barvocuc/translations/*.qm`, push
+* [ ] Wait for [Appveyor](https://ci.appveyor.com/project/encukou/barvocuc/history) to successfully build
+* [ ] Tag and push the commit that changed `setup.py`
+* [ ] Run `twine upload dist/*` to release on to PyPI
+* [ ] Add release notes and Appveyor result to Github Releases
+
 
 Credits
 -------
