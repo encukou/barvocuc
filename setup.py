@@ -4,7 +4,7 @@ import sys
 
 setup_args = dict(
     name='barvocuc',
-    version='2.0b1',
+    version='2.0b2',
     description='Software for Analysis of Color Images',
     #long_description="TODO",
     author='Petr Viktorin',
