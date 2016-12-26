@@ -30,6 +30,14 @@ setup_args = dict(
         'oldconf': ["PyYAML"],  # Old config file support
         'test': ["pytest"],     # Test suite
     },
+    package_data={
+        'barvocuc': [
+            'COPYING.html',
+            'ui/*',
+            'translations/*',
+            'media/*',
+        ],
+    },
     zip_safe=False,
 )
 
