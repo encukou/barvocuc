@@ -79,7 +79,6 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionAbout"/>
-    <addaction name="actionOpenDocs"/>
     <addaction name="actionOpenLicence"/>
    </widget>
    <widget class="QMenu" name="menuView">

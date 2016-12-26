@@ -777,7 +777,7 @@ class Gui(object):
 
     @action_handler('actionOpenLicence')
     def about(self):
-        return self.show_about(2)
+        return self.show_about(1)
 
     def show_about(self, pageno):
         if self.about_dialog:
@@ -792,6 +792,10 @@ class Gui(object):
                 license_html = f.read()
             widget = dialog.findChild(QtWidgets.QTextBrowser, 'textLicense')
             widget.setHtml(license_html)
+
+            # Remove Documentation tab
+            widget = dialog.findChild(QtWidgets.QTabWidget, 'tabWidget')
+            widget.removeTab(1)
 
         widget = dialog.findChild(QtWidgets.QTabWidget, 'tabWidget')
         widget.setCurrentIndex(pageno)
