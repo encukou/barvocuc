@@ -1,12 +1,15 @@
 from setuptools import setup, find_packages
 import sys
+import textwrap
 
 
 setup_args = dict(
     name='barvocuc',
     version='2.0b2',
     description='Software for Analysis of Color Images',
-    #long_description="TODO",
+    long_description=textwrap.dedent("""
+        See the `project on Github <https://github.com/encukou/barvocuc>`_.
+        """),
     author='Petr Viktorin',
     author_email='encukou@gmail.com',
     license='GPL v3+',
@@ -37,6 +40,9 @@ setup_args = dict(
             'translations/*',
             'media/*',
         ],
+    },
+    entry_points = {
+        'console_scripts': ['barvocuc=barvocuc.cli:cli'],
     },
     zip_safe=False,
 )

@@ -1,0 +1,150 @@
+Barvocuc
+========
+
+Software for Color Image Analysis
+
+
+Installation
+------------
+
+For Windows, a package with the graphical interface is available at
+[the GitHub releases page](https://github.com/encukou/barvocuc/releases).
+Select the first `barvocuc-gui.exe` file there.
+
+For other systems, and for using the non-interactive interface,
+`barvocuc` can be installed as a Python package on Python 3.5 or greater.
+Required libraries (such as `Numpy`, `Scipy`, `Pillow` and `PyQT`) should
+be installed automatically this way.
+
+The command to install varies slightly between environments.
+On most Linux distributions,it is:
+
+    python3 -m pip install --user barvocuc[gui]
+
+In a Python virtual environment, enter:
+
+    python -m pip install barvocuc[gui]
+
+If using as a library, leave off the `[gui]`.
+If you need to use configuration files from Barvocuc 1.0, use `[gui,oldconf]`
+instead of `[gui]`.
+
+
+Usage
+-----
+
+### GUI
+
+The graphical interface can be started with:
+
+    barvocuc gui
+
+The interface allows setting analysis parameters (thresholds for individual
+colors, model version) and adding images to analyze.
+When an image is added or selected, it and its analysis results can be viewed
+in views at the bottom of the window.
+Additional views canbe enabled via the "View" menu.
+
+When images are added and parameters set, numerical results can be exported
+to CSV format (either to file or to the clipboard).
+Also, results can be saved to directory; this outputs result images as well
+as the CSV.
+
+The parameters can be saved to and restored from files using menu options.
+
+
+### Batch processing
+
+Non-interactive processing is done using the command:
+
+    barvocuc analyze IMAGES
+
+(Substitute source images or directories for `IMAGES`.)
+
+This outputs analysis results to standard output as CSV.
+
+To save results to file instead, use `-o FILE.csv`.
+
+To save results including images, use `--outdir DIRECTORY`.
+
+
+### Library
+
+Barvocuc also works as a Python library.
+Example usage:
+
+    from barvocuc import ImageAnalyzer
+    with open(filename, 'rb') as img_file:
+        analyzer = ImageAnalyzer(img_file)
+
+    print(analyzer.results['red'])
+
+The `Analyzer` objects have dict-like attributes `results` (numerical results),
+`arrays` (Numpy arrays), and `images` (Pillow images).
+To see which results are available, see for example:
+
+    for key in analyzer.results:
+        print(key)
+
+
+Contributing
+------------
+
+You’re welcome to join this project!
+
+If you spot an issue, please report it at the [Issues page](https://github.com/encukou/barvocuc/issues)
+on Github.
+
+If you’d like to start changing the code or documentation, check out the code locally using:
+
+    git clone https://github.com/encukou/barvocuc
+
+If you’re new to this, please read the [this guide](https://guides.github.com/activities/contributing-to-open-source/)
+about collaborating on Github-hosted projects like this one.
+
+If that doesn’t make sense, please [e-mail the author](encukou@gmail.com)
+for clarification. I’d be happy to help you get started.
+
+### Release checklist
+
+Releasing the software is still a bit cumbersome.
+If you're the maintainer, you can follow these steps to get a release out:
+
+* [ ] Install tools and test deps: `python -m pip install twine -e.[test]`
+* [ ] Run `make` to regenerate message catalogs. Commit if necessary.
+* [ ] Run tests: `python -m pytest test_barvocuc`
+* [ ] Update the version number in `setup.py`
+* [ ] Make the release `rm -rvf dist/ ; python -m setup.py sdist bdist_wheel`
+* [ ] Check files from `dist/` by installing into a fresh virtualenv.
+* [ ] Switch to branch `appveyor`, commit `barvocuc/translations/*.qm`, push
+* [ ] Wait for [Appveyor](https://ci.appveyor.com/project/encukou/barvocuc/history) to successfully build
+* [ ] Tag and push the commit that changed `setup.py`
+* [ ] Run `twine upload dist/*` to release on to PyPI
+* [ ] Add release notes and Appveyor result to Github Releases
+
+
+Credits
+-------
+
+© 2010,2011,2012,2016 Petr Viktorin & Národní Ústav Duševního Zdraví
+
+This SW is a result of the research funded by the project Nr. LO1611 with
+a financial support from the MEYS under the NPU I program.
+
+
+License
+-------
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License, Version 3,
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+A copy of the GNU General Public License is included in the file called
+LICENSE.
+
