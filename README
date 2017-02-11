@@ -114,7 +114,7 @@ If you're the maintainer, you can follow these steps to get a release out:
 * [ ] Run `make` to regenerate message catalogs. Commit if necessary.
 * [ ] Run tests: `python -m pytest test_barvocuc`
 * [ ] Update the version number in `setup.py`
-* [ ] Make the release `rm -rvf dist/ ; python -m setup.py sdist bdist_wheel`
+* [ ] Make the release `rm -rvf dist/ ; python setup.py sdist bdist_wheel`
 * [ ] Check files from `dist/` by installing into a fresh virtualenv.
 * [ ] Switch to branch `appveyor`, commit `barvocuc/translations/*.qm`, push
 * [ ] Wait for [Appveyor](https://ci.appveyor.com/project/encukou/barvocuc/history) to successfully build

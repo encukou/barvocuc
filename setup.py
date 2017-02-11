@@ -5,7 +5,7 @@ import textwrap
 
 setup_args = dict(
     name='barvocuc',
-    version='2.0b2',
+    version='2.0',
     description='Software for Analysis of Color Images',
     long_description=textwrap.dedent("""
         See the `project on Github <https://github.com/encukou/barvocuc>`_.
