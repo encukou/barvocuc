@@ -90,3 +90,14 @@ def test_gen_dir(tmpdir):
         generate_csv(f, [basedir], settings=settings, outdir=str(tmpdir))
         got = f.getvalue()
     assert_dirs_same(str(tmpdir), os.path.join(basedir, 'expected_dir'))
+
+
+def test_single_image(tmpdir):
+    with open(example_filename('test_settings.dat'), encoding='utf-8') as f:
+        settings = Settings.load_from(f)
+
+    filename = os.path.join(basedir, 'palette_test.png')
+    with io.StringIO() as f:
+        generate_csv(f, [filename], settings=settings, outdir=str(tmpdir))
+        got = f.getvalue()
+    assert_dirs_same(str(tmpdir), os.path.join(basedir, 'expected_dir_single'))
