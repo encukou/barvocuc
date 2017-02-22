@@ -49,7 +49,7 @@ def generate_csv(csv_file, paths, *, settings=None, outdir=None):
             writer.writerow(row)
 
     paths = sorted(generate_paths(paths))
-    prefix = os.path.commonpath(paths)
+    prefix = os.path.commonpath([os.path.dirname(p) for p in paths])
 
     writerow(
         settings.field_names[n]
